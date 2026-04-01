@@ -1,0 +1,398 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "last_updated": "2025-01-01",
+    "maintainer": "MirrorMan Project",
+    "description": "Curated list of programming language mirrors for users in restricted regions"
+  },
+  "languages": {
+    "python": {
+      "name": "Python (pip)",
+      "icon": "🐍",
+      "category": "general",
+      "env_var": "PIP_INDEX_URL",
+      "config_file": "~/.pip/pip.conf",
+      "config_file_win": "%APPDATA%\\pip\\pip.ini",
+      "default_registry": "https://pypi.org/simple/",
+      "mirrors": [
+        {
+          "id": "tsinghua",
+          "name": "Tsinghua University (China)",
+          "url": "https://pypi.tuna.tsinghua.edu.cn/simple/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Most popular mirror in Asia"
+        },
+        {
+          "id": "aliyun",
+          "name": "Aliyun (Alibaba Cloud)",
+          "url": "https://mirrors.aliyun.com/pypi/simple/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Alibaba official mirror"
+        },
+        {
+          "id": "ustc",
+          "name": "USTC (University of Science and Technology of China)",
+          "url": "https://mirrors.ustc.edu.cn/pypi/web/simple/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "douban",
+          "name": "Douban",
+          "url": "https://pypi.doubanio.com/simple/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "medium",
+          "last_updated": "2024-06-01",
+          "notes": "May be slower"
+        }
+      ],
+      "usage": {
+        "temp": "pip install {package} -i {mirror_url}",
+        "permanent_linux": "pip config set global.index-url {mirror_url}",
+        "permanent_win": "pip config set global.index-url {mirror_url}"
+      }
+    },
+    "npm": {
+      "name": "Node.js (npm)",
+      "icon": "📦",
+      "category": "javascript",
+      "env_var": "npm_config_registry",
+      "config_file": "~/.npmrc",
+      "config_file_win": "%USERPROFILE%\\.npmrc",
+      "default_registry": "https://registry.npmjs.org/",
+      "mirrors": [
+        {
+          "id": "taobao",
+          "name": "Taobao NPM Mirror (npmmirror)",
+          "url": "https://registry.npmmirror.com/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Official Taobao mirror, recommended"
+        },
+        {
+          "id": "tencent",
+          "name": "Tencent Cloud",
+          "url": "https://mirrors.cloud.tencent.com/npm/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "huaweicloud",
+          "name": "Huawei Cloud",
+          "url": "https://mirrors.huaweicloud.com/repository/npm/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        }
+      ],
+      "usage": {
+        "temp": "npm install {package} --registry {mirror_url}",
+        "permanent_linux": "npm config set registry {mirror_url}",
+        "permanent_win": "npm config set registry {mirror_url}"
+      }
+    },
+    "docker": {
+      "name": "Docker Hub",
+      "icon": "🐋",
+      "category": "devops",
+      "env_var": "",
+      "config_file": "/etc/docker/daemon.json",
+      "config_file_win": "%USERPROFILE%\\.docker\\daemon.json",
+      "default_registry": "https://registry-1.docker.io",
+      "mirrors": [
+        {
+          "id": "aliyun_docker",
+          "name": "Aliyun Docker Mirror",
+          "url": "https://registry.cn-hangzhou.aliyuncs.com",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Requires Aliyun account for personal mirror"
+        },
+        {
+          "id": "163",
+          "name": "163 (NetEase)",
+          "url": "https://hub-mirror.c.163.com",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "medium",
+          "last_updated": "2024-09-01",
+          "notes": ""
+        },
+        {
+          "id": "ustc_docker",
+          "name": "USTC Docker Mirror",
+          "url": "https://docker.mirrors.ustc.edu.cn",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "medium",
+          "last_updated": "2024-12-01",
+          "notes": ""
+        },
+        {
+          "id": "dockerproxy",
+          "name": "Docker Proxy",
+          "url": "https://dockerproxy.com",
+          "country": "GLOBAL",
+          "flag": "🌐",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Global proxy service"
+        }
+      ],
+      "usage": {
+        "temp": "docker pull {mirror_host}/{image}",
+        "permanent_linux": "Add to /etc/docker/daemon.json: {\"registry-mirrors\": [\"{mirror_url}\"]}",
+        "permanent_win": "Add to Docker Desktop settings > Docker Engine"
+      }
+    },
+    "golang": {
+      "name": "Go (GOPROXY)",
+      "icon": "🐹",
+      "category": "general",
+      "env_var": "GOPROXY",
+      "config_file": "",
+      "config_file_win": "",
+      "default_registry": "https://proxy.golang.org,direct",
+      "mirrors": [
+        {
+          "id": "goproxy_cn",
+          "name": "GOPROXY.CN",
+          "url": "https://goproxy.cn,direct",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Most reliable Go proxy in China"
+        },
+        {
+          "id": "goproxy_io",
+          "name": "GOPROXY.IO",
+          "url": "https://goproxy.io,direct",
+          "country": "GLOBAL",
+          "flag": "🌐",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Global CDN"
+        },
+        {
+          "id": "aliyun_go",
+          "name": "Aliyun Go Proxy",
+          "url": "https://mirrors.aliyun.com/goproxy/,direct",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        }
+      ],
+      "usage": {
+        "temp": "GOPROXY={mirror_url} go get {package}",
+        "permanent_linux": "go env -w GOPROXY={mirror_url}",
+        "permanent_win": "go env -w GOPROXY={mirror_url}"
+      }
+    },
+    "rust": {
+      "name": "Rust (Cargo)",
+      "icon": "🦀",
+      "category": "systems",
+      "env_var": "",
+      "config_file": "~/.cargo/config.toml",
+      "config_file_win": "%USERPROFILE%\\.cargo\\config.toml",
+      "default_registry": "https://crates.io",
+      "mirrors": [
+        {
+          "id": "tuna_rust",
+          "name": "Tsinghua University (Rust)",
+          "url": "https://mirrors.tuna.tsinghua.edu.cn/crates.io-index",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Set in ~/.cargo/config.toml"
+        },
+        {
+          "id": "ustc_rust",
+          "name": "USTC Rust Mirror",
+          "url": "https://mirrors.ustc.edu.cn/crates.io-index",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "rsproxy",
+          "name": "RsProxy (ByteDance)",
+          "url": "https://rsproxy.cn",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "ByteDance official mirror"
+        }
+      ],
+      "usage": {
+        "temp": "Not supported natively; set in config.toml",
+        "permanent_linux": "Add to ~/.cargo/config.toml: [source.crates-io]\\nreplace-with = 'mirror'\\n[source.mirror]\\nregistry = '{mirror_url}'",
+        "permanent_win": "Same as Linux but in %USERPROFILE%\\.cargo\\config.toml"
+      }
+    },
+    "java": {
+      "name": "Java (Maven)",
+      "icon": "☕",
+      "category": "jvm",
+      "env_var": "",
+      "config_file": "~/.m2/settings.xml",
+      "config_file_win": "%USERPROFILE%\\.m2\\settings.xml",
+      "default_registry": "https://repo.maven.apache.org/maven2",
+      "mirrors": [
+        {
+          "id": "aliyun_maven",
+          "name": "Aliyun Maven",
+          "url": "https://maven.aliyun.com/repository/public",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Most popular Maven mirror"
+        },
+        {
+          "id": "huawei_maven",
+          "name": "Huawei Cloud Maven",
+          "url": "https://mirrors.huaweicloud.com/repository/maven/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        }
+      ],
+      "usage": {
+        "temp": "mvn install -Dmaven.repo.remote={mirror_url}",
+        "permanent_linux": "Add mirror block to ~/.m2/settings.xml",
+        "permanent_win": "Add mirror block to %USERPROFILE%\\.m2\\settings.xml"
+      }
+    },
+    "ruby": {
+      "name": "Ruby (RubyGems / Bundler)",
+      "icon": "💎",
+      "category": "scripting",
+      "env_var": "",
+      "config_file": "~/.gemrc",
+      "config_file_win": "%USERPROFILE%\\.gemrc",
+      "default_registry": "https://rubygems.org",
+      "mirrors": [
+        {
+          "id": "tuna_ruby",
+          "name": "Tsinghua University (Ruby)",
+          "url": "https://mirrors.tuna.tsinghua.edu.cn/rubygems/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "aliyun_ruby",
+          "name": "Aliyun Ruby",
+          "url": "https://mirrors.aliyun.com/rubygems/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "medium",
+          "last_updated": "2024-12-01",
+          "notes": ""
+        }
+      ],
+      "usage": {
+        "temp": "gem install {package} --source {mirror_url}",
+        "permanent_linux": "gem sources --add {mirror_url} --remove https://rubygems.org",
+        "permanent_win": "gem sources --add {mirror_url} --remove https://rubygems.org"
+      }
+    },
+    "linux": {
+      "name": "Linux Package Managers",
+      "icon": "🐧",
+      "category": "os",
+      "env_var": "",
+      "config_file": "/etc/apt/sources.list",
+      "config_file_win": "N/A",
+      "default_registry": "varies by distro",
+      "mirrors": [
+        {
+          "id": "tuna_linux",
+          "name": "Tsinghua University (Linux)",
+          "url": "https://mirrors.tuna.tsinghua.edu.cn/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Ubuntu, Debian, CentOS, Arch..."
+        },
+        {
+          "id": "aliyun_linux",
+          "name": "Aliyun Linux Mirror",
+          "url": "https://mirrors.aliyun.com/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Ubuntu, Debian, CentOS..."
+        },
+        {
+          "id": "ustc_linux",
+          "name": "USTC Linux Mirror",
+          "url": "https://mirrors.ustc.edu.cn/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "163_linux",
+          "name": "163 (NetEase) Linux",
+          "url": "https://mirrors.163.com/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "medium",
+          "last_updated": "2024-10-01",
+          "notes": ""
+        }
+      ],
+      "usage": {
+        "temp": "apt-get -o Acquire::http::Proxy={mirror_url} install {package}",
+        "permanent_linux": "Edit /etc/apt/sources.list to replace URLs",
+        "permanent_win": "N/A"
+      }
+    }
+  },
+  "dns_servers": [
+    { "name": "Google DNS", "ip": "8.8.8.8", "country": "US" },
+    { "name": "Cloudflare DNS", "ip": "1.1.1.1", "country": "US" },
+    { "name": "OpenDNS", "ip": "208.67.222.222", "country": "US" },
+    { "name": "Quad9", "ip": "9.9.9.9", "country": "US" },
+    { "name": "Shecan (Iran)", "ip": "178.22.122.100", "country": "IR" },
+    { "name": "403.online (Iran)", "ip": "10.202.10.202", "country": "IR" },
+    { "name": "Electrotm (Iran)", "ip": "78.157.42.100", "country": "IR" },
+    { "name": "Begzar (Iran)", "ip": "185.55.226.26", "country": "IR" }
+  ]
+}
