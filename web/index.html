@@ -1,1729 +1,2525 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MirrorMan — آینه‌یاب حرفه‌ای</title>
-<style>
-/* ══════════════════════════════════════════════════
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MirrorMan — آینه‌یاب حرفه‌ای</title>
+  <style>
+    /* ══════════════════════════════════════════════════
    LOCAL FONTS — no internet required
    Run web/download-fonts.sh (or .ps1 / .py) once
    to download font files into web/fonts/
    ══════════════════════════════════════════════════ */
 
-/* Vazirmatn — Persian / Latin UI font */
-@font-face {
-  font-family: 'Vazirmatn';
-  src: url('fonts/Vazirmatn-Light.woff2') format('woff2');
-  font-weight: 300; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: 'Vazirmatn';
-  src: url('fonts/Vazirmatn-Regular.woff2') format('woff2');
-  font-weight: 400; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: 'Vazirmatn';
-  src: url('fonts/Vazirmatn-Medium.woff2') format('woff2');
-  font-weight: 500; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: 'Vazirmatn';
-  src: url('fonts/Vazirmatn-SemiBold.woff2') format('woff2');
-  font-weight: 600; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: 'Vazirmatn';
-  src: url('fonts/Vazirmatn-Bold.woff2') format('woff2');
-  font-weight: 700; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: 'Vazirmatn';
-  src: url('fonts/Vazirmatn-ExtraBold.woff2') format('woff2');
-  font-weight: 800; font-style: normal; font-display: swap;
-}
-
-/* JetBrains Mono — code / monospace */
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('fonts/JetBrainsMono-Regular.woff2') format('woff2');
-  font-weight: 400; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('fonts/JetBrainsMono-Medium.woff2') format('woff2');
-  font-weight: 500; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('fonts/JetBrainsMono-Bold.woff2') format('woff2');
-  font-weight: 700; font-style: normal; font-display: swap;
-}
-
-/* ── CSS Variables ── */
-:root {
-  --bg:        #0b0f1a;
-  --bg2:       #111827;
-  --bg3:       #1a2236;
-  --surface:   #1e2d45;
-  --border:    #2a3f5f;
-  --border2:   #3a5278;
-  --text:      #e2e8f0;
-  --text2:     #94a3b8;
-  --text3:     #64748b;
-  --accent:    #38bdf8;
-  --accent2:   #7dd3fc;
-  --green:     #4ade80;
-  --yellow:    #fbbf24;
-  --red:       #f87171;
-  --purple:    #a78bfa;
-  --orange:    #fb923c;
-  --glow:      0 0 30px rgba(56,189,248,0.15);
-  --glow2:     0 0 60px rgba(56,189,248,0.08);
-  --radius:    12px;
-  --radius-lg: 20px;
-  --mono:      'JetBrains Mono', monospace;
-  --sans:      'Vazirmatn', 'Segoe UI', sans-serif;
-}
-
-/* ── Reset & Base ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  font-family: var(--sans);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-  line-height: 1.7;
-}
-
-/* ── Background Mesh ── */
-body::before {
-  content: '';
-  position: fixed; inset: 0; z-index: -1;
-  background:
-    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(56,189,248,0.07) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(167,139,250,0.07) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 30% at 50% 50%, rgba(74,222,128,0.03) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-/* ── Grid Overlay ── */
-body::after {
-  content: '';
-  position: fixed; inset: 0; z-index: -1;
-  background-image:
-    linear-gradient(rgba(56,189,248,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(56,189,248,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-}
-
-/* ── Layout ── */
-.container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
-
-/* ── Header ── */
-header {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(11,15,26,0.85);
-  backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid var(--border);
-  padding: 0;
-}
-
-.header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 32px;
-  gap: 24px;
-}
-
-.logo {
-  display: flex; align-items: center; gap: 12px;
-  text-decoration: none; color: inherit;
-  flex-shrink: 0;
-}
-
-.logo-icon {
-  width: 40px; height: 40px;
-  background: linear-gradient(135deg, var(--accent), var(--purple));
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
-  box-shadow: 0 0 20px rgba(56,189,248,0.3);
-}
-
-.logo-text { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
-.logo-text span { color: var(--accent); }
-
-.logo-version {
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  color: var(--text3);
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  padding: 2px 8px; border-radius: 20px;
-  align-self: flex-end; margin-bottom: 4px;
-}
-
-.nav {
-  display: flex; align-items: center; gap: 8px;
-  flex-wrap: wrap;
-}
-
-.nav a {
-  color: var(--text2);
-  text-decoration: none;
-  font-size: 0.85rem;
-  padding: 6px 14px;
-  border-radius: 8px;
-  transition: all 0.2s;
-  border: 1px solid transparent;
-  font-weight: 500;
-}
-.nav a:hover, .nav a.active {
-  color: var(--accent);
-  background: rgba(56,189,248,0.08);
-  border-color: rgba(56,189,248,0.2);
-}
-
-/* ── Hero ── */
-.hero {
-  padding: 80px 32px 60px;
-  text-align: center;
-  position: relative;
-}
-
-.hero-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: rgba(56,189,248,0.08);
-  border: 1px solid rgba(56,189,248,0.25);
-  color: var(--accent2);
-  font-size: 0.8rem; font-weight: 600;
-  padding: 6px 16px; border-radius: 20px;
-  margin-bottom: 24px;
-  font-family: var(--mono);
-  letter-spacing: 0.5px;
-}
-
-.hero-badge::before {
-  content: '';
-  width: 6px; height: 6px;
-  background: var(--green);
-  border-radius: 50%;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(1.5); }
-}
-
-.hero h1 {
-  font-size: clamp(2.2rem, 5vw, 3.8rem);
-  font-weight: 800;
-  line-height: 1.2;
-  margin-bottom: 20px;
-  letter-spacing: -1px;
-}
-
-.hero h1 .highlight {
-  background: linear-gradient(135deg, var(--accent), var(--purple), var(--green));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.hero p {
-  font-size: 1.1rem; color: var(--text2); max-width: 600px; margin: 0 auto 40px;
-  line-height: 1.8;
-}
-
-.hero-stats {
-  display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;
-  margin-bottom: 48px;
-}
-
-.stat {
-  text-align: center;
-}
-
-.stat-num {
-  font-size: 2rem; font-weight: 800;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  font-family: var(--mono);
-}
-
-.stat-label { font-size: 0.8rem; color: var(--text3); font-weight: 500; margin-top: 4px; }
-
-/* ── Search Bar ── */
-.search-wrap {
-  max-width: 560px; margin: 0 auto;
-  position: relative;
-}
-
-.search-input {
-  width: 100%;
-  background: var(--bg2);
-  border: 1.5px solid var(--border);
-  color: var(--text);
-  font-family: var(--sans);
-  font-size: 1rem;
-  padding: 14px 20px 14px 50px;
-  border-radius: var(--radius);
-  outline: none;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  direction: rtl;
-}
-
-.search-input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(56,189,248,0.12), var(--glow);
-}
-
-.search-input::placeholder { color: var(--text3); }
-
-.search-icon {
-  position: absolute;
-  right: 16px; top: 50%;
-  transform: translateY(-50%);
-  color: var(--text3);
-  font-size: 1.1rem;
-  pointer-events: none;
-}
-
-/* ── Filter Tabs ── */
-.filters {
-  display: flex; align-items: center;
-  gap: 8px; padding: 24px 32px;
-  flex-wrap: wrap;
-  border-bottom: 1px solid var(--border);
-}
-
-.filter-label { font-size: 0.8rem; color: var(--text3); font-weight: 600; margin-left: 8px; }
-
-.filter-btn {
-  background: var(--bg2);
-  border: 1.5px solid var(--border);
-  color: var(--text2);
-  font-family: var(--sans);
-  font-size: 0.82rem; font-weight: 600;
-  padding: 7px 16px; border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex; align-items: center; gap: 6px;
-}
-
-.filter-btn:hover {
-  border-color: var(--border2);
-  color: var(--text);
-  background: var(--bg3);
-}
-
-.filter-btn.active {
-  background: rgba(56,189,248,0.1);
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.filter-count {
-  background: var(--bg3);
-  padding: 1px 7px; border-radius: 10px;
-  font-size: 0.72rem;
-  color: var(--text3);
-}
-
-.filter-btn.active .filter-count {
-  background: rgba(56,189,248,0.15);
-  color: var(--accent2);
-}
-
-/* ── Main Grid ── */
-.main { padding: 32px; }
-
-.section-header {
-  display: flex; align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.section-title {
-  font-size: 1.1rem; font-weight: 700;
-  display: flex; align-items: center; gap: 10px;
-}
-
-.section-title .dot {
-  width: 8px; height: 8px;
-  background: var(--accent);
-  border-radius: 50%;
-  box-shadow: 0 0 8px var(--accent);
-}
-
-/* ── Language Cards ── */
-.languages-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-  gap: 20px;
-  margin-bottom: 48px;
-}
-
-.lang-card {
-  background: var(--bg2);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  transition: all 0.3s;
-  position: relative;
-}
-
-.lang-card::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, transparent, rgba(56,189,248,0.02));
-  pointer-events: none;
-}
-
-.lang-card:hover {
-  border-color: var(--border2);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 20px rgba(56,189,248,0.08);
-}
-
-.lang-header {
-  display: flex; align-items: center;
-  justify-content: space-between;
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(255,255,255,0.01);
-}
-
-.lang-title {
-  display: flex; align-items: center; gap: 12px;
-}
-
-.lang-icon {
-  font-size: 1.8rem;
-  line-height: 1;
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
-}
-
-.lang-name-wrap {}
-
-.lang-name {
-  font-size: 1rem; font-weight: 700; color: var(--text);
-  line-height: 1.2;
-}
-
-.lang-id {
-  font-family: var(--mono); font-size: 0.72rem;
-  color: var(--accent); background: rgba(56,189,248,0.08);
-  padding: 2px 8px; border-radius: 5px; margin-top: 4px;
-  display: inline-block;
-}
-
-.lang-meta {
-  display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
-}
-
-.badge {
-  font-size: 0.68rem; font-weight: 700;
-  padding: 3px 10px; border-radius: 6px;
-  text-transform: uppercase; letter-spacing: 0.5px;
-}
-
-.badge-general { background: rgba(56,189,248,0.12); color: var(--accent2); border: 1px solid rgba(56,189,248,0.2); }
-.badge-js, .badge-javascript { background: rgba(251,191,36,0.12); color: var(--yellow); border: 1px solid rgba(251,191,36,0.2); }
-.badge-systems { background: rgba(248,113,113,0.12); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
-.badge-devops { background: rgba(74,222,128,0.12); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
-.badge-jvm { background: rgba(167,139,250,0.12); color: var(--purple); border: 1px solid rgba(167,139,250,0.2); }
-.badge-scripting { background: rgba(251,146,60,0.12); color: var(--orange); border: 1px solid rgba(251,146,60,0.2); }
-.badge-os { background: rgba(56,189,248,0.12); color: var(--accent); border: 1px solid rgba(56,189,248,0.2); }
-
-.mirror-count-badge {
-  font-family: var(--mono); font-size: 0.72rem;
-  color: var(--text3);
-}
-
-/* ── Mirror List inside card ── */
-.mirrors-list { padding: 12px 24px 20px; }
-
-.mirror-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px;
-  margin: 4px 0;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: 1.5px solid transparent;
-  background: rgba(255,255,255,0.01);
-  gap: 12px;
-}
-
-.mirror-item:hover {
-  background: rgba(56,189,248,0.05);
-  border-color: rgba(56,189,248,0.15);
-}
-
-.mirror-item.selected {
-  background: rgba(56,189,248,0.08);
-  border-color: var(--accent);
-}
-
-.mirror-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
-
-.mirror-flag { font-size: 1.2rem; flex-shrink: 0; }
-
-.mirror-info { min-width: 0; }
-
-.mirror-name {
-  font-size: 0.85rem; font-weight: 600; color: var(--text);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-
-.mirror-url {
-  font-family: var(--mono); font-size: 0.68rem;
-  color: var(--text3);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  max-width: 240px;
-}
-
-.mirror-right {
-  display: flex; align-items: center; gap: 8px;
-  flex-shrink: 0;
-}
-
-.speed-badge {
-  font-size: 0.68rem; font-weight: 700;
-  padding: 2px 8px; border-radius: 5px;
-  text-transform: uppercase; letter-spacing: 0.3px;
-}
-
-.speed-fast   { background: rgba(74,222,128,0.12); color: var(--green); }
-.speed-medium { background: rgba(251,191,36,0.12); color: var(--yellow); }
-.speed-slow   { background: rgba(248,113,113,0.12); color: var(--red); }
-.speed-unknown{ background: rgba(148,163,184,0.12); color: var(--text3); }
-
-.copy-btn {
-  background: var(--bg3); border: 1px solid var(--border);
-  color: var(--text3); font-size: 0.7rem; font-family: var(--mono);
-  padding: 3px 8px; border-radius: 6px; cursor: pointer;
-  transition: all 0.2s; white-space: nowrap;
-}
-
-.copy-btn:hover { color: var(--accent); border-color: var(--accent); background: rgba(56,189,248,0.06); }
-.copy-btn.copied { color: var(--green); border-color: var(--green); }
-
-/* ── Command Drawer ── */
-.lang-footer {
-  border-top: 1px solid var(--border);
-  padding: 12px 24px;
-  background: rgba(0,0,0,0.15);
-}
-
-.cmd-tabs {
-  display: flex; gap: 4px; margin-bottom: 12px;
-}
-
-.cmd-tab {
-  font-family: var(--mono); font-size: 0.7rem;
-  background: var(--bg3); border: 1px solid var(--border);
-  color: var(--text3); padding: 4px 10px; border-radius: 6px;
-  cursor: pointer; transition: all 0.2s;
-}
-
-.cmd-tab.active { background: rgba(56,189,248,0.1); border-color: var(--accent); color: var(--accent); }
-
-.cmd-block {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 12px 14px;
-  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
-  position: relative;
-}
-
-.cmd-text {
-  font-family: var(--mono); font-size: 0.75rem;
-  color: var(--text2); line-height: 1.6;
-  word-break: break-all; flex: 1;
-}
-
-.cmd-text .cmd-keyword { color: var(--accent); }
-.cmd-text .cmd-value   { color: var(--green); }
-.cmd-text .cmd-comment { color: var(--text3); }
-
-/* ── Scanner Section ── */
-.scanner-section {
-  background: var(--bg2);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 28px 32px;
-  margin-bottom: 32px;
-}
-
-.scanner-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
-}
-
-.scanner-title { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-
-.scan-controls {
-  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
-}
-
-.select-input {
-  background: var(--bg3); border: 1.5px solid var(--border);
-  color: var(--text); font-family: var(--sans); font-size: 0.85rem;
-  padding: 8px 14px; border-radius: 8px; outline: none; cursor: pointer;
-  transition: border-color 0.2s;
-}
-
-.select-input:focus { border-color: var(--accent); }
-
-.btn {
-  font-family: var(--sans); font-size: 0.85rem; font-weight: 600;
-  padding: 8px 20px; border-radius: 8px; cursor: pointer;
-  transition: all 0.2s; border: 1.5px solid transparent;
-  display: inline-flex; align-items: center; gap: 8px;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, var(--accent), #0ea5e9);
-  color: #0b1520;
-  border-color: transparent;
-  box-shadow: 0 4px 14px rgba(56,189,248,0.25);
-}
-
-.btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(56,189,248,0.35);
-}
-
-.btn-secondary {
-  background: var(--bg3); border-color: var(--border); color: var(--text2);
-}
-
-.btn-secondary:hover { border-color: var(--border2); color: var(--text); }
-
-/* ── Scan Results ── */
-.scan-results { margin-top: 20px; display: none; }
-.scan-results.visible { display: block; }
-
-.scan-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 16px; border-radius: 8px; margin: 6px 0;
-  background: var(--bg3); border: 1.5px solid var(--border);
-  transition: all 0.2s; gap: 12px;
-}
-
-.scan-row.best {
-  border-color: var(--green);
-  background: rgba(74,222,128,0.05);
-}
-
-.scan-row.scanning {
-  animation: scanning 1s infinite alternate;
-}
-
-@keyframes scanning {
-  from { border-color: var(--border); }
-  to   { border-color: var(--accent); }
-}
-
-.scan-name { font-weight: 600; flex: 1; }
-
-.scan-bar {
-  height: 6px; border-radius: 3px;
-  background: var(--border); width: 120px; overflow: hidden; flex-shrink: 0;
-}
-
-.scan-bar-fill {
-  height: 100%; border-radius: 3px;
-  transition: width 0.8s ease-out, background 0.3s;
-}
-
-.scan-ms { font-family: var(--mono); font-size: 0.8rem; color: var(--text2); min-width: 70px; text-align: right; }
-
-.best-tag {
-  font-size: 0.68rem; font-weight: 700; color: var(--green);
-  background: rgba(74,222,128,0.12); border: 1px solid rgba(74,222,128,0.3);
-  padding: 2px 8px; border-radius: 5px;
-}
-
-/* ── DNS Section ── */
-.dns-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px;
-  margin-top: 20px;
-}
-
-.dns-card {
-  background: var(--bg3); border: 1.5px solid var(--border);
-  border-radius: var(--radius); padding: 14px 18px;
-  display: flex; align-items: center; gap: 14px;
-  transition: all 0.2s;
-}
-
-.dns-card:hover { border-color: var(--border2); }
-
-.dns-ip {
-  font-family: var(--mono); font-size: 0.9rem; font-weight: 700;
-  color: var(--accent); flex-shrink: 0;
-}
-
-.dns-details { flex: 1; }
-.dns-name { font-size: 0.85rem; font-weight: 600; }
-.dns-country { font-size: 0.72rem; color: var(--text3); margin-top: 2px; }
-
-.dns-status {
-  width: 10px; height: 10px; border-radius: 50%;
-  background: var(--text3); flex-shrink: 0;
-  transition: background 0.3s;
-}
-.dns-status.ok      { background: var(--green); box-shadow: 0 0 6px var(--green); }
-.dns-status.slow    { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
-.dns-status.fail    { background: var(--red); }
-.dns-status.testing { animation: pulse 1s infinite; background: var(--accent); }
-
-/* ── Guide Section ── */
-.guide-section {
-  background: var(--bg2); border: 1.5px solid var(--border);
-  border-radius: var(--radius-lg); overflow: hidden;
-  margin-bottom: 32px;
-}
-
-.guide-header {
-  padding: 24px 32px 20px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(255,255,255,0.01);
-}
-
-.guide-header h2 { font-size: 1.1rem; font-weight: 700; }
-
-.guide-tabs {
-  display: flex; border-bottom: 1px solid var(--border); overflow-x: auto;
-}
-
-.guide-tab {
-  font-family: var(--mono); font-size: 0.78rem; font-weight: 600;
-  padding: 14px 20px; cursor: pointer;
-  color: var(--text3); border-bottom: 2px solid transparent;
-  white-space: nowrap; transition: all 0.2s;
-  background: none; border-top: none; border-left: none; border-right: none;
-  outline: none;
-}
-
-.guide-tab:hover { color: var(--text2); }
-.guide-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-.guide-content { padding: 28px 32px; display: none; }
-.guide-content.active { display: block; }
-
-.guide-content h3 {
-  font-size: 0.95rem; font-weight: 700; margin-bottom: 14px;
-  color: var(--text);
-}
-
-.guide-content p { color: var(--text2); font-size: 0.88rem; margin-bottom: 16px; line-height: 1.8; }
-
-.code-block {
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: 10px; overflow: hidden; margin: 12px 0 20px;
-}
-
-.code-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 14px;
-  background: rgba(255,255,255,0.02);
-  border-bottom: 1px solid var(--border);
-}
-
-.code-lang-tag {
-  font-family: var(--mono); font-size: 0.68rem;
-  color: var(--accent); font-weight: 700;
-  background: rgba(56,189,248,0.1); padding: 2px 8px; border-radius: 4px;
-}
-
-.code-body {
-  padding: 16px 18px;
-  font-family: var(--mono); font-size: 0.8rem;
-  color: var(--text2); line-height: 1.7; overflow-x: auto;
-}
-
-.code-body .kw { color: var(--accent); }
-.code-body .val { color: var(--green); }
-.code-body .cmt { color: var(--text3); font-style: italic; }
-.code-body .str { color: var(--yellow); }
-
-/* ── Toast ── */
-#toast {
-  position: fixed; bottom: 28px; right: 28px; z-index: 9999;
-  background: var(--surface); border: 1.5px solid var(--border);
-  color: var(--text); font-size: 0.85rem; font-weight: 600;
-  padding: 12px 20px; border-radius: 10px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-  transform: translateY(80px); opacity: 0;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  display: flex; align-items: center; gap: 10px;
-}
-
-#toast.show {
-  transform: translateY(0); opacity: 1;
-}
-
-#toast .toast-icon { font-size: 1rem; }
-
-/* ── Footer ── */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 32px;
-  text-align: center;
-  color: var(--text3); font-size: 0.8rem;
-}
-
-footer a { color: var(--accent2); text-decoration: none; }
-footer a:hover { text-decoration: underline; }
-
-.footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 12px; flex-wrap: wrap; }
-
-/* ── No Results ── */
-.no-results {
-  text-align: center; padding: 60px 20px;
-  color: var(--text3); display: none;
-}
-.no-results.visible { display: block; }
-.no-results .icon { font-size: 3rem; margin-bottom: 12px; }
-
-/* ── Donate Section ── */
-.donate-section {
-  position: relative;
-  padding: 72px 32px;
-  overflow: hidden;
-  background: var(--bg);
-  border-top: 1px solid var(--border);
-}
-
-.donate-section::before {
-  content: '';
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse 70% 60% at 50% 0%, rgba(167,139,250,0.1) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 40% at 20% 100%, rgba(56,189,248,0.06) 0%, transparent 60%);
-  pointer-events: none;
-}
-
-.donate-inner { position: relative; z-index: 1; }
-
-.donate-heart-row {
-  display: flex; justify-content: center; align-items: center; gap: 10px;
-  margin-bottom: 20px;
-}
-
-.donate-hearts {
-  font-size: 1.8rem;
-  animation: floatHearts 3s ease-in-out infinite;
-}
-
-@keyframes floatHearts {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-6px) scale(1.1); }
-}
-
-.donate-eyebrow {
-  display: inline-block;
-  font-size: 0.72rem; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--purple);
-  background: rgba(167,139,250,0.1);
-  border: 1px solid rgba(167,139,250,0.25);
-  padding: 4px 14px; border-radius: 20px;
-}
-
-.donate-title {
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
-  font-weight: 800;
-  text-align: center;
-  margin: 16px 0 10px;
-  letter-spacing: -0.5px;
-  line-height: 1.25;
-}
-
-.donate-title .g1 {
-  background: linear-gradient(135deg, #f472b6, #a78bfa, #38bdf8);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-
-.donate-subtitle {
-  text-align: center;
-  color: var(--text2);
-  font-size: 1rem;
-  max-width: 620px;
-  margin: 0 auto 48px;
-  line-height: 1.85;
-}
-
-.donate-subtitle strong { color: var(--text); font-weight: 600; }
-
-/* ── Payment Cards Grid ── */
-.donate-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 18px;
-  max-width: 960px;
-  margin: 0 auto 40px;
-}
-
-.pay-card {
-  background: var(--bg2);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 24px 24px 20px;
-  transition: all 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-
-.pay-card::after {
-  content: '';
-  position: absolute; top: 0; right: 0;
-  width: 120px; height: 120px;
-  border-radius: 50%;
-  opacity: 0.04;
-  transform: translate(30%, -30%);
-  transition: opacity 0.3s;
-}
-
-.pay-card:hover { transform: translateY(-4px); }
-.pay-card:hover::after { opacity: 0.08; }
-
-.pay-card.crypto  { --card-color: #f7931a; }
-.pay-card.card-ir { --card-color: #4ade80; }
-.pay-card.zarinpal{ --card-color: #fbbf24; }
-
-.pay-card.crypto::after   { background: #f7931a; }
-.pay-card.card-ir::after  { background: #4ade80; }
-.pay-card.zarinpal::after { background: #fbbf24; }
-
-.pay-card:hover { border-color: var(--card-color, var(--border2)); box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 0 1px var(--card-color, transparent); }
-
-.pay-card-header {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 18px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border);
-}
-
-.pay-icon {
-  width: 42px; height: 42px; border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.3rem; flex-shrink: 0;
-}
-
-.pay-card.crypto   .pay-icon { background: rgba(247,147,26,0.12); }
-.pay-card.card-ir  .pay-icon { background: rgba(74,222,128,0.12); }
-.pay-card.zarinpal .pay-icon { background: rgba(251,191,36,0.12); }
-
-.pay-card-title { font-size: 0.95rem; font-weight: 700; }
-.pay-card-sub   { font-size: 0.72rem; color: var(--text3); margin-top: 2px; }
-
-/* ── Crypto rows ── */
-.crypto-row {
-  display: flex; flex-direction: column;
-  gap: 14px;
-}
-
-.crypto-item {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 14px;
-  transition: border-color 0.2s;
-}
-
-.crypto-item:hover { border-color: rgba(247,147,26,0.4); }
-
-.crypto-item-head {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 6px;
-}
-
-.crypto-name {
-  font-size: 0.75rem; font-weight: 700;
-  color: #f7931a;
-  display: flex; align-items: center; gap: 5px;
-}
-
-.crypto-network {
-  font-size: 0.62rem; color: var(--text3);
-  background: var(--bg); border: 1px solid var(--border);
-  padding: 1px 7px; border-radius: 4px;
-}
-
-.crypto-addr {
-  font-family: var(--mono); font-size: 0.68rem;
-  color: var(--text2); word-break: break-all; line-height: 1.5;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.crypto-addr:hover { color: var(--accent); }
-
-/* ── Bank rows ── */
-.bank-row { display: flex; flex-direction: column; gap: 12px; }
-
-.bank-item {
-  background: var(--bg3); border: 1px solid var(--border);
-  border-radius: 10px; padding: 12px 14px;
-  transition: border-color 0.2s;
-}
-
-.bank-item:hover { border-color: rgba(74,222,128,0.4); }
-
-.bank-label {
-  font-size: 0.7rem; font-weight: 700; color: var(--green);
-  margin-bottom: 5px; display: flex; align-items: center; gap: 5px;
-}
-
-.bank-value {
-  font-family: var(--mono); font-size: 0.78rem;
-  color: var(--text); letter-spacing: 0.5px;
-  cursor: pointer; transition: color 0.2s;
-  direction: ltr; text-align: right;
-}
-
-.bank-value:hover { color: var(--accent); }
-
-.bank-owner {
-  font-size: 0.68rem; color: var(--text3);
-  margin-top: 3px;
-}
-
-/* ── Zarinpal ── */
-.zarinpal-wrap {
-  display: flex; flex-direction: column; align-items: center;
-  gap: 16px; text-align: center;
-}
-
-.zarinpal-btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
-  color: #1a0f00;
-  font-family: var(--sans); font-size: 0.9rem; font-weight: 700;
-  padding: 13px 28px; border-radius: 10px;
-  text-decoration: none; border: none; cursor: pointer;
-  transition: all 0.25s;
-  box-shadow: 0 4px 18px rgba(251,191,36,0.3);
-  width: 100%;
-  justify-content: center;
-}
-
-.zarinpal-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(251,191,36,0.45);
-  background: linear-gradient(135deg, #fcd34d, #fbbf24);
-}
-
-.zarinpal-note {
-  font-size: 0.72rem; color: var(--text3); line-height: 1.6;
-}
-
-.zarinpal-note span { color: var(--yellow); font-weight: 600; }
-
-/* ── Copy hint ── */
-.copy-hint {
-  font-size: 0.65rem; color: var(--text3);
-  text-align: center; margin-top: 4px;
-  display: flex; align-items: center; justify-content: center; gap: 4px;
-}
-
-/* ── Thank you strip ── */
-.donate-thankyou {
-  max-width: 680px; margin: 0 auto;
-  text-align: center;
-  padding: 28px 32px;
-  background: rgba(167,139,250,0.05);
-  border: 1.5px solid rgba(167,139,250,0.15);
-  border-radius: var(--radius-lg);
-}
-
-.donate-thankyou p {
-  color: var(--text2); font-size: 0.9rem; line-height: 1.9;
-}
-
-.donate-thankyou p strong { color: var(--purple); }
-
-.donate-thankyou .big-heart {
-  font-size: 2.4rem; display: block; margin-bottom: 12px;
-  animation: floatHearts 2.5s ease-in-out infinite;
-}
-
-/* ── Responsive ── */
-@media (max-width: 900px) {
-  .donate-grid { grid-template-columns: 1fr; max-width: 480px; }
-}
-
-@media (max-width: 768px) {
-  .header-inner { padding: 12px 16px; flex-wrap: wrap; gap: 10px; }
-  .logo-text { font-size: 1.15rem; }
-  .logo-version { display: none; }
-  .nav { gap: 4px; }
-  .nav a { font-size: 0.78rem; padding: 5px 10px; }
-
-  .hero { padding: 40px 16px 32px; }
-  .hero h1 { font-size: 1.9rem; }
-  .hero p { font-size: 0.92rem; }
-  .hero-stats { gap: 20px; }
-  .stat-num { font-size: 1.4rem; }
-  .stat-label { font-size: 0.72rem; }
-
-  .main { padding: 16px; }
-  .filters { padding: 16px; gap: 6px; }
-  .filter-btn { font-size: 0.76rem; padding: 5px 11px; }
-  .filter-label { display: none; }
-
-  .languages-grid { grid-template-columns: 1fr; gap: 14px; }
-
-  .lang-header { padding: 16px 18px 12px; }
-  .mirrors-list { padding: 10px 18px 16px; }
-  .lang-footer { padding: 10px 18px; }
-
-  .mirror-item { flex-wrap: wrap; }
-  .mirror-right { width: 100%; justify-content: flex-start; }
-
-  .scanner-section { padding: 18px 18px; }
-  .scanner-header { flex-direction: column; align-items: flex-start; }
-  .scan-controls { width: 100%; flex-direction: column; }
-  .select-input, .btn { width: 100%; }
-  .scan-bar { width: 80px; }
-
-  .guide-content { padding: 18px 16px; }
-  .guide-tab { font-size: 0.72rem; padding: 10px 13px; }
-  .code-body { font-size: 0.72rem; }
-
-  .donate-section { padding: 48px 16px; }
-  .donate-title { font-size: 1.6rem; }
-  .donate-subtitle { font-size: 0.88rem; }
-  .pay-card { padding: 18px 18px 16px; }
-  .donate-thankyou { padding: 20px 18px; }
-  .bank-value { font-size: 0.68rem; }
-  .crypto-addr { font-size: 0.62rem; }
-
-  .dns-grid { grid-template-columns: 1fr; }
-
-  footer { padding: 24px 16px; }
-  .footer-links { gap: 14px; }
-}
-
-@media (max-width: 420px) {
-  .hero h1 { font-size: 1.5rem; }
-  .lang-title { gap: 8px; }
-  .lang-icon { font-size: 1.4rem; }
-  .scan-bar { display: none; }
-}
-
-/* ── Scrollbar ── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg2); }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-
-/* ── Animations ── */
-.fade-in { animation: fadeIn 0.5s ease forwards; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-
-.lang-card { animation: fadeIn 0.4s ease forwards; opacity: 0; }
-.lang-card:nth-child(1) { animation-delay: 0.05s; }
-.lang-card:nth-child(2) { animation-delay: 0.10s; }
-.lang-card:nth-child(3) { animation-delay: 0.15s; }
-.lang-card:nth-child(4) { animation-delay: 0.20s; }
-.lang-card:nth-child(5) { animation-delay: 0.25s; }
-.lang-card:nth-child(6) { animation-delay: 0.30s; }
-.lang-card:nth-child(7) { animation-delay: 0.35s; }
-.lang-card:nth-child(8) { animation-delay: 0.40s; }
-</style>
+    /* Vazirmatn — Persian / Latin UI font */
+    @font-face {
+      font-family: 'Vazirmatn';
+      src: url('fonts/Vazirmatn-Light.woff2') format('woff2');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Vazirmatn';
+      src: url('fonts/Vazirmatn-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Vazirmatn';
+      src: url('fonts/Vazirmatn-Medium.woff2') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Vazirmatn';
+      src: url('fonts/Vazirmatn-SemiBold.woff2') format('woff2');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Vazirmatn';
+      src: url('fonts/Vazirmatn-Bold.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Vazirmatn';
+      src: url('fonts/Vazirmatn-ExtraBold.woff2') format('woff2');
+      font-weight: 800;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* JetBrains Mono — code / monospace */
+    @font-face {
+      font-family: 'JetBrains Mono';
+      src: url('fonts/JetBrainsMono-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'JetBrains Mono';
+      src: url('fonts/JetBrainsMono-Medium.woff2') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'JetBrains Mono';
+      src: url('fonts/JetBrainsMono-Bold.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* ── CSS Variables ── */
+    :root {
+      --bg: #0b0f1a;
+      --bg2: #111827;
+      --bg3: #1a2236;
+      --surface: #1e2d45;
+      --border: #2a3f5f;
+      --border2: #3a5278;
+      --text: #e2e8f0;
+      --text2: #94a3b8;
+      --text3: #64748b;
+      --accent: #38bdf8;
+      --accent2: #7dd3fc;
+      --green: #4ade80;
+      --yellow: #fbbf24;
+      --red: #f87171;
+      --purple: #a78bfa;
+      --orange: #fb923c;
+      --glow: 0 0 30px rgba(56, 189, 248, 0.15);
+      --glow2: 0 0 60px rgba(56, 189, 248, 0.08);
+      --radius: 12px;
+      --radius-lg: 20px;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Vazirmatn', 'Segoe UI', sans-serif;
+    }
+
+    /* ── Reset & Base ── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+
+    /* ── Background Mesh ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 0%, rgba(56, 189, 248, 0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(167, 139, 250, 0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(74, 222, 128, 0.03) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── Grid Overlay ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-image:
+        linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── Header ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(11, 15, 26, 0.85);
+      backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+      padding: 0;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 32px;
+      gap: 24px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+      flex-shrink: 0;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      object-fit: contain;
+      font-size: 20px;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+    }
+
+    .logo-text {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-text span {
+      color: var(--accent);
+    }
+
+    .logo-version {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--text3);
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 20px;
+      align-self: flex-end;
+      margin-bottom: 4px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav a {
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.85rem;
+      padding: 6px 14px;
+      border-radius: 8px;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+      font-weight: 500;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.08);
+      border-color: rgba(56, 189, 248, 0.2);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 80px 32px 60px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      color: var(--accent2);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      font-family: var(--mono);
+      letter-spacing: 0.5px;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.5;
+        transform: scale(1.5);
+      }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+    }
+
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, var(--accent), var(--purple), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text2);
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.8;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: var(--mono);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text3);
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    /* ── Search Bar ── */
+    .search-wrap {
+      max-width: 560px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 1rem;
+      padding: 14px 20px 14px 50px;
+      border-radius: var(--radius);
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      direction: rtl;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12), var(--glow);
+    }
+
+    .search-input::placeholder {
+      color: var(--text3);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text3);
+      font-size: 1.1rem;
+      pointer-events: none;
+    }
+
+    /* ── Filter Tabs ── */
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 24px 32px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .filter-label {
+      font-size: 0.8rem;
+      color: var(--text3);
+      font-weight: 600;
+      margin-left: 8px;
+    }
+
+    .filter-btn {
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      color: var(--text2);
+      font-family: var(--sans);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 7px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--border2);
+      color: var(--text);
+      background: var(--bg3);
+    }
+
+    .filter-btn.active {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .filter-count {
+      background: var(--bg3);
+      padding: 1px 7px;
+      border-radius: 10px;
+      font-size: 0.72rem;
+      color: var(--text3);
+    }
+
+    .filter-btn.active .filter-count {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent2);
+    }
+
+    /* ── Main Grid ── */
+    .main {
+      padding: 32px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    /* ── Language Cards ── */
+    .languages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+
+    .lang-card {
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .lang-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent, rgba(56, 189, 248, 0.02));
+      pointer-events: none;
+    }
+
+    .lang-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(56, 189, 248, 0.08);
+    }
+
+    .lang-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    .lang-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .lang-icon {
+      font-size: 1.8rem;
+      line-height: 1;
+      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+    }
+
+    .lang-name-wrap {}
+
+    .lang-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .lang-id {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.08);
+      padding: 2px 8px;
+      border-radius: 5px;
+      margin-top: 4px;
+      display: inline-block;
+    }
+
+    .lang-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-general {
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--accent2);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    .badge-js,
+    .badge-javascript {
+      background: rgba(251, 191, 36, 0.12);
+      color: var(--yellow);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+    }
+
+    .badge-systems {
+      background: rgba(248, 113, 113, 0.12);
+      color: var(--red);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+    }
+
+    .badge-devops {
+      background: rgba(74, 222, 128, 0.12);
+      color: var(--green);
+      border: 1px solid rgba(74, 222, 128, 0.2);
+    }
+
+    .badge-jvm {
+      background: rgba(167, 139, 250, 0.12);
+      color: var(--purple);
+      border: 1px solid rgba(167, 139, 250, 0.2);
+    }
+
+    .badge-scripting {
+      background: rgba(251, 146, 60, 0.12);
+      color: var(--orange);
+      border: 1px solid rgba(251, 146, 60, 0.2);
+    }
+
+    .badge-os {
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    .mirror-count-badge {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--text3);
+    }
+
+    /* ── Mirror List inside card ── */
+    .mirrors-list {
+      padding: 12px 24px 20px;
+    }
+
+    .mirror-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      margin: 4px 0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1.5px solid transparent;
+      background: rgba(255, 255, 255, 0.01);
+      gap: 12px;
+    }
+
+    .mirror-item:hover {
+      background: rgba(56, 189, 248, 0.05);
+      border-color: rgba(56, 189, 248, 0.15);
+    }
+
+    .mirror-item.selected {
+      background: rgba(56, 189, 248, 0.08);
+      border-color: var(--accent);
+    }
+
+    .mirror-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .mirror-flag {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .mirror-info {
+      min-width: 0;
+    }
+
+    .mirror-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mirror-url {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--text3);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 240px;
+    }
+
+    .mirror-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .speed-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .speed-fast {
+      background: rgba(74, 222, 128, 0.12);
+      color: var(--green);
+    }
+
+    .speed-medium {
+      background: rgba(251, 191, 36, 0.12);
+      color: var(--yellow);
+    }
+
+    .speed-slow {
+      background: rgba(248, 113, 113, 0.12);
+      color: var(--red);
+    }
+
+    .speed-unknown {
+      background: rgba(148, 163, 184, 0.12);
+      color: var(--text3);
+    }
+
+    .copy-btn {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text3);
+      font-size: 0.7rem;
+      font-family: var(--mono);
+      padding: 3px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .copy-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.06);
+    }
+
+    .copy-btn.copied {
+      color: var(--green);
+      border-color: var(--green);
+    }
+
+    /* ── Command Drawer ── */
+    .lang-footer {
+      border-top: 1px solid var(--border);
+      padding: 12px 24px;
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .cmd-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+
+    .cmd-tab {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text3);
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cmd-tab.active {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .cmd-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      position: relative;
+    }
+
+    .cmd-text {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--text2);
+      line-height: 1.6;
+      word-break: break-all;
+      flex: 1;
+    }
+
+    .cmd-text .cmd-keyword {
+      color: var(--accent);
+    }
+
+    .cmd-text .cmd-value {
+      color: var(--green);
+    }
+
+    .cmd-text .cmd-comment {
+      color: var(--text3);
+    }
+
+    /* ── Scanner Section ── */
+    .scanner-section {
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      margin-bottom: 32px;
+    }
+
+    .scanner-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .scanner-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .scan-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .select-input {
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      padding: 8px 14px;
+      border-radius: 8px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .select-input:focus {
+      border-color: var(--accent);
+    }
+
+    .btn {
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 8px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1.5px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #0ea5e9);
+      color: #0b1520;
+      border-color: transparent;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.35);
+    }
+
+    .btn-secondary {
+      background: var(--bg3);
+      border-color: var(--border);
+      color: var(--text2);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--border2);
+      color: var(--text);
+    }
+
+    /* ── Scan Results ── */
+    .scan-results {
+      margin-top: 20px;
+      display: none;
+    }
+
+    .scan-results.visible {
+      display: block;
+    }
+
+    .scan-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin: 6px 0;
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      transition: all 0.2s;
+      gap: 12px;
+    }
+
+    .scan-row.best {
+      border-color: var(--green);
+      background: rgba(74, 222, 128, 0.05);
+    }
+
+    .scan-row.scanning {
+      animation: scanning 1s infinite alternate;
+    }
+
+    @keyframes scanning {
+      from {
+        border-color: var(--border);
+      }
+
+      to {
+        border-color: var(--accent);
+      }
+    }
+
+    .scan-name {
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .scan-bar {
+      height: 6px;
+      border-radius: 3px;
+      background: var(--border);
+      width: 120px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .scan-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.8s ease-out, background 0.3s;
+    }
+
+    .scan-ms {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--text2);
+      min-width: 70px;
+      text-align: right;
+    }
+
+    .best-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--green);
+      background: rgba(74, 222, 128, 0.12);
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      padding: 2px 8px;
+      border-radius: 5px;
+    }
+
+    /* ── DNS Section ── */
+    .dns-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .dns-card {
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all 0.2s;
+    }
+
+    .dns-card:hover {
+      border-color: var(--border2);
+    }
+
+    .dns-ip {
+      font-family: var(--mono);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .dns-details {
+      flex: 1;
+    }
+
+    .dns-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .dns-country {
+      font-size: 0.72rem;
+      color: var(--text3);
+      margin-top: 2px;
+    }
+
+    .dns-status {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--text3);
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+
+    .dns-status.ok {
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+    }
+
+    .dns-status.slow {
+      background: var(--yellow);
+      box-shadow: 0 0 6px var(--yellow);
+    }
+
+    .dns-status.fail {
+      background: var(--red);
+    }
+
+    .dns-status.testing {
+      animation: pulse 1s infinite;
+      background: var(--accent);
+    }
+
+    /* ── Guide Section ── */
+    .guide-section {
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+
+    .guide-header {
+      padding: 24px 32px 20px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    .guide-header h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .guide-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+    }
+
+    .guide-tab {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 14px 20px;
+      cursor: pointer;
+      color: var(--text3);
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: all 0.2s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      outline: none;
+    }
+
+    .guide-tab:hover {
+      color: var(--text2);
+    }
+
+    .guide-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .guide-content {
+      padding: 28px 32px;
+      display: none;
+    }
+
+    .guide-content.active {
+      display: block;
+    }
+
+    .guide-content h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: var(--text);
+    }
+
+    .guide-content p {
+      color: var(--text2);
+      font-size: 0.88rem;
+      margin-bottom: 16px;
+      line-height: 1.8;
+    }
+
+    .code-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 12px 0 20px;
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .code-lang-tag {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--accent);
+      font-weight: 700;
+      background: rgba(56, 189, 248, 0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .code-body {
+      padding: 16px 18px;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--text2);
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+
+    .code-body .kw {
+      color: var(--accent);
+    }
+
+    .code-body .val {
+      color: var(--green);
+    }
+
+    .code-body .cmt {
+      color: var(--text3);
+      font-style: italic;
+    }
+
+    .code-body .str {
+      color: var(--yellow);
+    }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 9999;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 10px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    #toast .toast-icon {
+      font-size: 1rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px;
+      text-align: center;
+      color: var(--text3);
+      font-size: 0.8rem;
+    }
+
+    footer a {
+      color: var(--accent2);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* ── No Results ── */
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text3);
+      display: none;
+    }
+
+    .no-results.visible {
+      display: block;
+    }
+
+    .no-results .icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+
+    /* ── Donate Section ── */
+    .donate-section {
+      position: relative;
+      padding: 72px 32px;
+      overflow: hidden;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+
+    .donate-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 0%, rgba(167, 139, 250, 0.1) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 20% 100%, rgba(56, 189, 248, 0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .donate-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .donate-heart-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .donate-hearts {
+      font-size: 1.8rem;
+      animation: floatHearts 3s ease-in-out infinite;
+    }
+
+    @keyframes floatHearts {
+
+      0%,
+      100% {
+        transform: translateY(0) scale(1);
+      }
+
+      50% {
+        transform: translateY(-6px) scale(1.1);
+      }
+    }
+
+    .donate-eyebrow {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--purple);
+      background: rgba(167, 139, 250, 0.1);
+      border: 1px solid rgba(167, 139, 250, 0.25);
+      padding: 4px 14px;
+      border-radius: 20px;
+    }
+
+    .donate-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      text-align: center;
+      margin: 16px 0 10px;
+      letter-spacing: -0.5px;
+      line-height: 1.25;
+    }
+
+    .donate-title .g1 {
+      background: linear-gradient(135deg, #f472b6, #a78bfa, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .donate-subtitle {
+      text-align: center;
+      color: var(--text2);
+      font-size: 1rem;
+      max-width: 620px;
+      margin: 0 auto 48px;
+      line-height: 1.85;
+    }
+
+    .donate-subtitle strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ── Payment Cards Grid ── */
+    .donate-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+      max-width: 960px;
+      margin: 0 auto 40px;
+    }
+
+    .pay-card {
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px 24px 20px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pay-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      opacity: 0.04;
+      transform: translate(30%, -30%);
+      transition: opacity 0.3s;
+    }
+
+    .pay-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .pay-card:hover::after {
+      opacity: 0.08;
+    }
+
+    .pay-card.crypto {
+      --card-color: #f7931a;
+    }
+
+    .pay-card.card-ir {
+      --card-color: #4ade80;
+    }
+
+    .pay-card.zarinpal {
+      --card-color: #fbbf24;
+    }
+
+    .pay-card.crypto::after {
+      background: #f7931a;
+    }
+
+    .pay-card.card-ir::after {
+      background: #4ade80;
+    }
+
+    .pay-card.zarinpal::after {
+      background: #fbbf24;
+    }
+
+    .pay-card:hover {
+      border-color: var(--card-color, var(--border2));
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--card-color, transparent);
+    }
+
+    .pay-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pay-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .pay-card.crypto .pay-icon {
+      background: rgba(247, 147, 26, 0.12);
+    }
+
+    .pay-card.card-ir .pay-icon {
+      background: rgba(74, 222, 128, 0.12);
+    }
+
+    .pay-card.zarinpal .pay-icon {
+      background: rgba(251, 191, 36, 0.12);
+    }
+
+    .pay-card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .pay-card-sub {
+      font-size: 0.72rem;
+      color: var(--text3);
+      margin-top: 2px;
+    }
+
+    /* ── Crypto rows ── */
+    .crypto-row {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .crypto-item {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      transition: border-color 0.2s;
+    }
+
+    .crypto-item:hover {
+      border-color: rgba(247, 147, 26, 0.4);
+    }
+
+    .crypto-item-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .crypto-name {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #f7931a;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .crypto-network {
+      font-size: 0.62rem;
+      color: var(--text3);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 1px 7px;
+      border-radius: 4px;
+    }
+
+    .crypto-addr {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--text2);
+      word-break: break-all;
+      line-height: 1.5;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .crypto-addr:hover {
+      color: var(--accent);
+    }
+
+    /* ── Bank rows ── */
+    .bank-row {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .bank-item {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      transition: border-color 0.2s;
+    }
+
+    .bank-item:hover {
+      border-color: rgba(74, 222, 128, 0.4);
+    }
+
+    .bank-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .bank-value {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--text);
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: color 0.2s;
+      direction: ltr;
+      text-align: right;
+    }
+
+    .bank-value:hover {
+      color: var(--accent);
+    }
+
+    .bank-owner {
+      font-size: 0.68rem;
+      color: var(--text3);
+      margin-top: 3px;
+    }
+
+    /* ── Zarinpal ── */
+    .zarinpal-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      text-align: center;
+    }
+
+    .zarinpal-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #1a0f00;
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 13px 28px;
+      border-radius: 10px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 4px 18px rgba(251, 191, 36, 0.3);
+      width: 100%;
+      justify-content: center;
+    }
+
+    .zarinpal-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(251, 191, 36, 0.45);
+      background: linear-gradient(135deg, #fcd34d, #fbbf24);
+    }
+
+    .zarinpal-note {
+      font-size: 0.72rem;
+      color: var(--text3);
+      line-height: 1.6;
+    }
+
+    .zarinpal-note span {
+      color: var(--yellow);
+      font-weight: 600;
+    }
+
+    /* ── Copy hint ── */
+    .copy-hint {
+      font-size: 0.65rem;
+      color: var(--text3);
+      text-align: center;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    /* ── Thank you strip ── */
+    .donate-thankyou {
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 28px 32px;
+      background: rgba(167, 139, 250, 0.05);
+      border: 1.5px solid rgba(167, 139, 250, 0.15);
+      border-radius: var(--radius-lg);
+    }
+
+    .donate-thankyou p {
+      color: var(--text2);
+      font-size: 0.9rem;
+      line-height: 1.9;
+    }
+
+    .donate-thankyou p strong {
+      color: var(--purple);
+    }
+
+    .donate-thankyou .big-heart {
+      font-size: 2.4rem;
+      display: block;
+      margin-bottom: 12px;
+      animation: floatHearts 2.5s ease-in-out infinite;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .donate-grid {
+        grid-template-columns: 1fr;
+        max-width: 480px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-inner {
+        padding: 12px 16px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .logo-text {
+        font-size: 1.15rem;
+      }
+
+      .logo-version {
+        display: none;
+      }
+
+      .nav {
+        gap: 4px;
+      }
+
+      .nav a {
+        font-size: 0.78rem;
+        padding: 5px 10px;
+      }
+
+      .hero {
+        padding: 40px 16px 32px;
+      }
+
+      .hero h1 {
+        font-size: 1.9rem;
+      }
+
+      .hero p {
+        font-size: 0.92rem;
+      }
+
+      .hero-stats {
+        gap: 20px;
+      }
+
+      .stat-num {
+        font-size: 1.4rem;
+      }
+
+      .stat-label {
+        font-size: 0.72rem;
+      }
+
+      .main {
+        padding: 16px;
+      }
+
+      .filters {
+        padding: 16px;
+        gap: 6px;
+      }
+
+      .filter-btn {
+        font-size: 0.76rem;
+        padding: 5px 11px;
+      }
+
+      .filter-label {
+        display: none;
+      }
+
+      .languages-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .lang-header {
+        padding: 16px 18px 12px;
+      }
+
+      .mirrors-list {
+        padding: 10px 18px 16px;
+      }
+
+      .lang-footer {
+        padding: 10px 18px;
+      }
+
+      .mirror-item {
+        flex-wrap: wrap;
+      }
+
+      .mirror-right {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .scanner-section {
+        padding: 18px 18px;
+      }
+
+      .scanner-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .scan-controls {
+        width: 100%;
+        flex-direction: column;
+      }
+
+      .select-input,
+      .btn {
+        width: 100%;
+      }
+
+      .scan-bar {
+        width: 80px;
+      }
+
+      .guide-content {
+        padding: 18px 16px;
+      }
+
+      .guide-tab {
+        font-size: 0.72rem;
+        padding: 10px 13px;
+      }
+
+      .code-body {
+        font-size: 0.72rem;
+      }
+
+      .donate-section {
+        padding: 48px 16px;
+      }
+
+      .donate-title {
+        font-size: 1.6rem;
+      }
+
+      .donate-subtitle {
+        font-size: 0.88rem;
+      }
+
+      .pay-card {
+        padding: 18px 18px 16px;
+      }
+
+      .donate-thankyou {
+        padding: 20px 18px;
+      }
+
+      .bank-value {
+        font-size: 0.68rem;
+      }
+
+      .crypto-addr {
+        font-size: 0.62rem;
+      }
+
+      .dns-grid {
+        grid-template-columns: 1fr;
+      }
+
+      footer {
+        padding: 24px 16px;
+      }
+
+      .footer-links {
+        gap: 14px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .hero h1 {
+        font-size: 1.5rem;
+      }
+
+      .lang-title {
+        gap: 8px;
+      }
+
+      .lang-icon {
+        font-size: 1.4rem;
+      }
+
+      .scan-bar {
+        display: none;
+      }
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg2);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent);
+    }
+
+    /* ── Animations ── */
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .lang-card {
+      animation: fadeIn 0.4s ease forwards;
+      opacity: 0;
+    }
+
+    .lang-card:nth-child(1) {
+      animation-delay: 0.05s;
+    }
+
+    .lang-card:nth-child(2) {
+      animation-delay: 0.10s;
+    }
+
+    .lang-card:nth-child(3) {
+      animation-delay: 0.15s;
+    }
+
+    .lang-card:nth-child(4) {
+      animation-delay: 0.20s;
+    }
+
+    .lang-card:nth-child(5) {
+      animation-delay: 0.25s;
+    }
+
+    .lang-card:nth-child(6) {
+      animation-delay: 0.30s;
+    }
+
+    .lang-card:nth-child(7) {
+      animation-delay: 0.35s;
+    }
+
+    .lang-card:nth-child(8) {
+      animation-delay: 0.40s;
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- ── Header ── -->
-<header>
-  <div class="header-inner">
-    <a href="#" class="logo">
-      <div class="logo-icon">🪞</div>
-      <div>
-        <div class="logo-text">Mirror<span>Man</span></div>
+  <!-- ── Header ── -->
+  <header>
+    <div class="header-inner">
+      <a href="#" class="logo">
+        <div class="logo-icon">
+          <img src="assets/logo/site_icon.png" width="42" height="42" alt="Logo">
+        </div>
+        <div>
+          <div class="logo-text">Mirror<span>Man</span></div>
+        </div>
+        <div class="logo-version">v1.0.0</div>
+      </a>
+      <nav class="nav">
+        <a href="#mirrors" class="active">میرورها</a>
+        <a href="#scanner">اسکنر</a>
+        <a href="#dns">DNS</a>
+        <a href="#guide">راهنما</a>
+        <a href="#donate"
+          style="color:var(--purple);border-color:rgba(167,139,250,0.25);background:rgba(167,139,250,0.06)">💜 حمایت</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── Hero ── -->
+  <section class="hero container">
+    <div class="hero-badge">🛡️ آینه‌یاب حرفه‌ای برای شبکه‌های محدود</div>
+    <h1>میرورهای <span class="highlight">سریع‌ترین</span><br>برای توسعه‌دهندگان</h1>
+    <p>پیدا کردن، تست و اعمال سریع میرور مناسب برای pip، npm، Docker، Go، Cargo و بیشتر — بدون دردسر</p>
+    <div class="hero-stats" id="hero-stats">
+      <div class="stat">
+        <div class="stat-num" id="stat-langs">–</div>
+        <div class="stat-label">زبان/ابزار</div>
       </div>
-      <div class="logo-version">v1.0.0</div>
-    </a>
-    <nav class="nav">
-      <a href="#mirrors" class="active">میرورها</a>
+      <div class="stat">
+        <div class="stat-num" id="stat-mirrors">–</div>
+        <div class="stat-label">میرور</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="stat-countries">–</div>
+        <div class="stat-label">کشور</div>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="search-input" placeholder="جستجو: python، docker، npm ...">
+    </div>
+  </section>
+
+  <!-- ── Filters ── -->
+  <div class="filters container" id="filters">
+    <span class="filter-label">دسته‌بندی:</span>
+    <button class="filter-btn active" data-cat="all">همه <span class="filter-count" id="fc-all">0</span></button>
+    <button class="filter-btn" data-cat="general">عمومی <span class="filter-count" id="fc-general">0</span></button>
+    <button class="filter-btn" data-cat="javascript">JavaScript <span class="filter-count"
+        id="fc-javascript">0</span></button>
+    <button class="filter-btn" data-cat="devops">DevOps <span class="filter-count" id="fc-devops">0</span></button>
+    <button class="filter-btn" data-cat="systems">Systems <span class="filter-count" id="fc-systems">0</span></button>
+    <button class="filter-btn" data-cat="jvm">JVM <span class="filter-count" id="fc-jvm">0</span></button>
+    <button class="filter-btn" data-cat="scripting">Scripting <span class="filter-count"
+        id="fc-scripting">0</span></button>
+    <button class="filter-btn" data-cat="os">Linux/OS <span class="filter-count" id="fc-os">0</span></button>
+  </div>
+
+  <!-- ── Main Content ── -->
+  <main class="main container" id="mirrors">
+
+    <!-- Language Cards -->
+    <div class="section-header">
+      <div class="section-title"><span class="dot"></span> میرورهای موجود</div>
+      <div style="font-size:0.8rem;color:var(--text3)" id="result-count"></div>
+    </div>
+
+    <div class="languages-grid" id="languages-grid"></div>
+    <div class="no-results" id="no-results">
+      <div class="icon">🔭</div>
+      <p>نتیجه‌ای یافت نشد. جستجوی دیگری امتحان کنید.</p>
+    </div>
+
+    <!-- ── Scanner ── -->
+    <div class="scanner-section" id="scanner">
+      <div class="scanner-header">
+        <div class="scanner-title">⚡ اسکنر سرعت میرور</div>
+        <div class="scan-controls">
+          <select class="select-input" id="scan-lang-select">
+            <option value="">انتخاب زبان...</option>
+          </select>
+          <button class="btn btn-primary" id="scan-btn" onclick="runScan()">
+            <span id="scan-btn-text">🚀 شروع اسکن</span>
+          </button>
+        </div>
+      </div>
+      <p style="color:var(--text2);font-size:0.85rem;margin-bottom:8px;">
+        این ابزار با اتصال واقعی به هر میرور، سرعت آن‌ها را اندازه‌گیری کرده و سریع‌ترین را پیشنهاد می‌دهد.
+      </p>
+      <div class="scan-results" id="scan-results"></div>
+    </div>
+
+    <!-- ── DNS ── -->
+    <div class="scanner-section" id="dns">
+      <div class="scanner-header">
+        <div class="scanner-title">🌐 سرورهای DNS پیشنهادی</div>
+        <button class="btn btn-secondary" onclick="testDNS()">🔄 تست سرعت</button>
+      </div>
+      <p style="color:var(--text2);font-size:0.85rem;margin-bottom:12px;">
+        برای دسترسی بهتر به میرورها، استفاده از DNS مناسب توصیه می‌شود.
+      </p>
+      <div class="dns-grid" id="dns-grid"></div>
+    </div>
+
+    <!-- ── Guide ── -->
+    <div class="guide-section" id="guide">
+      <div class="guide-header">
+        <h2>📚 راهنمای نصب و استفاده</h2>
+      </div>
+      <div class="guide-tabs">
+        <button class="guide-tab active" onclick="showGuide('install', this)">نصب MirrorMan</button>
+        <button class="guide-tab" onclick="showGuide('linux', this)">Linux/macOS</button>
+        <button class="guide-tab" onclick="showGuide('windows', this)">Windows</button>
+        <button class="guide-tab" onclick="showGuide('temp', this)">استفاده موقت</button>
+        <button class="guide-tab" onclick="showGuide('custom', this)">میرور سفارشی</button>
+      </div>
+
+      <div class="guide-content active" id="guide-install">
+        <h3>نصب MirrorMan</h3>
+        <p>برای نصب پروژه، ابتدا ریپوزیتوری را کلون کنید:</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang-tag">bash</span> <button class="copy-btn"
+              onclick="copyCode(this)">کپی</button></div>
+          <div class="code-body"><span class="cmt"># Clone the repository</span>
+            <span class="kw">git</span> clone https://github.com/mirrorman/mirrorman.git
+            <span class="kw">cd</span> mirrorman
+
+            <span class="cmt"># Make executable (Linux/macOS)</span>
+            <span class="kw">chmod</span> +x bin/mirrorman.sh
+            <span class="kw">sudo</span> ln -s $(<span class="kw">pwd</span>)/bin/mirrorman.sh /usr/local/bin/mirrorman
+
+            <span class="cmt"># Install shell aliases</span>
+            mirrorman alias install
+          </div>
+        </div>
+        <p>برای ویندوز، از PowerShell استفاده کنید:</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang-tag">powershell</span> <button class="copy-btn"
+              onclick="copyCode(this)">کپی</button></div>
+          <div class="code-body"><span class="cmt"># Add to PATH or call directly</span>
+            .\bin\mirrorman.ps1 help</div>
+        </div>
+      </div>
+
+      <div class="guide-content" id="guide-linux">
+        <h3>استفاده در Linux و macOS</h3>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang-tag">bash</span> <button class="copy-btn"
+              onclick="copyCode(this)">کپی</button></div>
+          <div class="code-body"><span class="cmt"># لیست همه میرورها</span>
+            <span class="kw">mirrorman</span> list
+
+            <span class="cmt"># اسکن سریع‌ترین میرور برای Python</span>
+            <span class="kw">mirrorman</span> scan python
+
+            <span class="cmt"># اعمال دائمی میرور</span>
+            <span class="kw">mirrorman</span> set python tsinghua
+
+            <span class="cmt"># نمایش وضعیت فعلی</span>
+            <span class="kw">mirrorman</span> status
+
+            <span class="cmt"># بازگشت به حالت پیش‌فرض</span>
+            <span class="kw">mirrorman</span> reset python
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-content" id="guide-windows">
+        <h3>استفاده در Windows (PowerShell)</h3>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang-tag">powershell</span> <button class="copy-btn"
+              onclick="copyCode(this)">کپی</button></div>
+          <div class="code-body"><span class="cmt"># لیست میرورها</span>
+            .\mirrorman.ps1 list
+
+            <span class="cmt"># اسکن سرعت</span>
+            .\mirrorman.ps1 scan python
+
+            <span class="cmt"># اعمال دائمی</span>
+            .\mirrorman.ps1 set python tsinghua
+
+            <span class="cmt"># اعمال موقت (فقط برای این session)</span>
+            .\mirrorman.ps1 set npm taobao -Temp
+
+            <span class="cmt"># بازگشت به پیش‌فرض</span>
+            .\mirrorman.ps1 reset npm
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-content" id="guide-temp">
+        <h3>استفاده موقت (بدون تغییر دائمی)</h3>
+        <p>برای اجرای یک دستور با میرور خاص، بدون تغییر تنظیمات سیستم:</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang-tag">bash</span> <button class="copy-btn"
+              onclick="copyCode(this)">کپی</button></div>
+          <div class="code-body"><span class="cmt"># یک دستور با میرور موقت</span>
+            <span class="kw">mirrorman</span> use python tsinghua -- pip install requests
+
+            <span class="cmt"># npm با میرور taobao</span>
+            <span class="kw">mirrorman</span> use npm taobao -- npm install express
+
+            <span class="cmt"># go get با میرور چینی</span>
+            <span class="kw">mirrorman</span> use golang goproxy_cn -- go get golang.org/x/tools
+
+            <span class="cmt"># یا از alias های پیش‌فرض</span>
+            <span class="kw">pip-cn</span> install requests
+            <span class="kw">npm-cn</span> install express
+            <span class="kw">go-cn</span> golang.org/x/tools
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-content" id="guide-custom">
+        <h3>افزودن میرور سفارشی</h3>
+        <p>می‌توانید میرور اختصاصی سازمان یا خود را اضافه کنید:</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang-tag">bash</span> <button class="copy-btn"
+              onclick="copyCode(this)">کپی</button></div>
+          <div class="code-body"><span class="cmt"># افزودن میرور اختصاصی</span>
+            <span class="kw">mirrorman</span> add python <span class="str">corporate</span> <span class="str">"PyPI شرکت
+              ما"</span> https://pypi.company.com/simple/
+
+            <span class="cmt"># سپس مثل بقیه استفاده کنید</span>
+            <span class="kw">mirrorman</span> set python corporate
+
+            <span class="cmt"># میرورهای سفارشی در این فایل ذخیره می‌شوند:</span>
+            <span class="cmt"># ~/.config/mirrorman/custom_mirrors.json</span>
+          </div>
+        </div>
+        <p>یا مستقیماً فایل JSON را ویرایش کنید و میرور دلخواه اضافه کنید.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════════════════════
+     DONATE SECTION
+     ══════════════════════════════════════════════════════════ -->
+  <section class="donate-section" id="donate">
+    <div class="container donate-inner">
+
+      <!-- Header -->
+      <div class="donate-heart-row">
+        <span class="donate-hearts">💜</span>
+        <span class="donate-eyebrow">از ما حمایت کنید</span>
+        <span class="donate-hearts">💜</span>
+      </div>
+
+      <h2 class="donate-title">
+        با <span class="g1">عشق</span> ساخته شد<br>
+        برای توسعه‌دهندگان آزاد
+      </h2>
+
+      <p class="donate-subtitle">
+        MirrorMan را با <strong>افتخار و بدون چشم‌داشت</strong> ساختیم — چون می‌دانیم دردِ
+        برنامه‌نویسی زیرِ سایه محدودیت چقدر سنگین است. اگر این ابزار حتی یک بار کمکتان کرد،
+        با یک حمایت کوچک، نور این پروژه را روشن نگه دارید.
+      </p>
+
+      <!-- Payment Cards -->
+      <div class="donate-grid">
+
+        <!-- ── Crypto ── -->
+        <div class="pay-card crypto">
+          <div class="pay-card-header">
+            <div class="pay-icon">₿</div>
+            <div>
+              <div class="pay-card-title">رمزارز (Crypto)</div>
+              <div class="pay-card-sub">Bitcoin · Ethereum · USDT · TRX</div>
+            </div>
+          </div>
+          <div class="crypto-row">
+
+            <div class="crypto-item" onclick="copyAddr(this,'YOUR_BTC_ADDRESS_HERE')">
+              <div class="crypto-item-head">
+                <span class="crypto-name">₿ Bitcoin</span>
+                <span class="crypto-network">BTC · Native SegWit</span>
+              </div>
+              <div class="crypto-addr">bc1qfw0cmg30lgard7jx66mh85l0ea7kvt38tppe57</div>
+              <div class="copy-hint">👆 کلیک برای کپی آدرس</div>
+            </div>
+
+            <div class="crypto-item" onclick="copyAddr(this,'YOUR_ETH_ADDRESS_HERE')">
+              <div class="crypto-item-head">
+                <span class="crypto-name" style="color:#627eea">Ξ Ethereum / USDT</span>
+                <span class="crypto-network">ERC-20</span>
+              </div>
+              <div class="crypto-addr">0x1410F99B230E87833A7A9E3b4c6ed5C5Cd57A5D8</div>
+              <div class="copy-hint">👆 کلیک برای کپی آدرس</div>
+            </div>
+
+            <div class="crypto-item" onclick="copyAddr(this,'YOUR_USDT_TRC20_ADDRESS_HERE')">
+              <div class="crypto-item-head">
+                <span class="crypto-name" style="color:#26a17b">₮ USDT / TRX</span>
+                <span class="crypto-network">TRC-20</span>
+              </div>
+              <div class="crypto-addr">TPyyZZNrc9naqKzPYEzdmzouAHoXh7M1EA</div>
+              <div class="copy-hint">👆 کلیک برای کپی آدرس</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── Iranian Bank ── -->
+        <div class="pay-card card-ir">
+          <div class="pay-card-header">
+            <div class="pay-icon">🏦</div>
+            <div>
+              <div class="pay-card-title">کارت بانکی (ایران)</div>
+              <div class="pay-card-sub">انتقال کارت به کارت</div>
+            </div>
+          </div>
+          <div class="bank-row">
+
+            <div class="bank-item" onclick="copyAddr(this,'6037991922491257')">
+              <div class="bank-label">💳 شماره کارت</div>
+              <div class="bank-value">6037-9919-2249-1257</div>
+              <div class="bank-owner">بانک ملی — امید ناطقی</div>
+              <div class="copy-hint">👆 کلیک برای کپی</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── ZarinPal ── -->
+        <div class="pay-card zarinpal">
+          <div class="pay-card-header">
+            <div class="pay-icon">⚡</div>
+            <div>
+              <div class="pay-card-title">زرین‌پال</div>
+              <div class="pay-card-sub">پرداخت آنلاین سریع</div>
+            </div>
+          </div>
+          <div class="zarinpal-wrap">
+            <p style="font-size:0.82rem;color:var(--text2);line-height:1.75;text-align:right;width:100%">
+              راحت‌ترین روش پرداخت برای کاربران ایرانی. فقط یک کلیک، بدون نیاز به وارد کردن آدرس.
+            </p>
+            <a href="https://zarinpal.al/omidnateghi.ir" target="_blank" rel="noopener" class="zarinpal-btn">
+              <span>⚡</span>
+              <span>پرداخت با زرین‌پال</span>
+            </a>
+            <p class="zarinpal-note">
+              پرداخت از طریق <span>درگاه امن زرین‌پال</span> — کارت شتاب همه بانک‌ها
+            </p>
+          </div>
+        </div>
+
+      </div><!-- /donate-grid -->
+
+      <!-- Thank-you note -->
+      <div class="donate-thankyou">
+        <span class="big-heart">🫂</span>
+        <p>
+          هر مبلغی که می‌فرستید، به معنای واقعی کلمه <strong>انگیزه</strong> می‌دهد —
+          نه فقط برای نگه‌داشتن سرورها، بلکه برای اینکه بدانیم این تلاش <strong>دیده می‌شود</strong>.
+          از هر کسی که پروژه را استفاده کرده، به اشتراک گذاشته یا حتی یک ستاره در GitHub زده،
+          از صمیم قلب ممنونیم. 💜
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-links">
+      <a href="#mirrors">میرورها</a>
       <a href="#scanner">اسکنر</a>
       <a href="#dns">DNS</a>
       <a href="#guide">راهنما</a>
-      <a href="#donate" style="color:var(--purple);border-color:rgba(167,139,250,0.25);background:rgba(167,139,250,0.06)">💜 حمایت</a>
-    </nav>
-  </div>
-</header>
-
-<!-- ── Hero ── -->
-<section class="hero container">
-  <div class="hero-badge">🛡️ آینه‌یاب حرفه‌ای برای شبکه‌های محدود</div>
-  <h1>میرورهای <span class="highlight">سریع‌ترین</span><br>برای توسعه‌دهندگان</h1>
-  <p>پیدا کردن، تست و اعمال سریع میرور مناسب برای pip، npm، Docker، Go، Cargo و بیشتر — بدون دردسر</p>
-  <div class="hero-stats" id="hero-stats">
-    <div class="stat"><div class="stat-num" id="stat-langs">–</div><div class="stat-label">زبان/ابزار</div></div>
-    <div class="stat"><div class="stat-num" id="stat-mirrors">–</div><div class="stat-label">میرور</div></div>
-    <div class="stat"><div class="stat-num" id="stat-countries">–</div><div class="stat-label">کشور</div></div>
-  </div>
-
-  <div class="search-wrap">
-    <span class="search-icon">🔍</span>
-    <input type="text" class="search-input" id="search-input" placeholder="جستجو: python، docker، npm ...">
-  </div>
-</section>
-
-<!-- ── Filters ── -->
-<div class="filters container" id="filters">
-  <span class="filter-label">دسته‌بندی:</span>
-  <button class="filter-btn active" data-cat="all">همه <span class="filter-count" id="fc-all">0</span></button>
-  <button class="filter-btn" data-cat="general">عمومی <span class="filter-count" id="fc-general">0</span></button>
-  <button class="filter-btn" data-cat="javascript">JavaScript <span class="filter-count" id="fc-javascript">0</span></button>
-  <button class="filter-btn" data-cat="devops">DevOps <span class="filter-count" id="fc-devops">0</span></button>
-  <button class="filter-btn" data-cat="systems">Systems <span class="filter-count" id="fc-systems">0</span></button>
-  <button class="filter-btn" data-cat="jvm">JVM <span class="filter-count" id="fc-jvm">0</span></button>
-  <button class="filter-btn" data-cat="scripting">Scripting <span class="filter-count" id="fc-scripting">0</span></button>
-  <button class="filter-btn" data-cat="os">Linux/OS <span class="filter-count" id="fc-os">0</span></button>
-</div>
-
-<!-- ── Main Content ── -->
-<main class="main container" id="mirrors">
-
-  <!-- Language Cards -->
-  <div class="section-header">
-    <div class="section-title"><span class="dot"></span> میرورهای موجود</div>
-    <div style="font-size:0.8rem;color:var(--text3)" id="result-count"></div>
-  </div>
-
-  <div class="languages-grid" id="languages-grid"></div>
-  <div class="no-results" id="no-results">
-    <div class="icon">🔭</div>
-    <p>نتیجه‌ای یافت نشد. جستجوی دیگری امتحان کنید.</p>
-  </div>
-
-  <!-- ── Scanner ── -->
-  <div class="scanner-section" id="scanner">
-    <div class="scanner-header">
-      <div class="scanner-title">⚡ اسکنر سرعت میرور</div>
-      <div class="scan-controls">
-        <select class="select-input" id="scan-lang-select">
-          <option value="">انتخاب زبان...</option>
-        </select>
-        <button class="btn btn-primary" id="scan-btn" onclick="runScan()">
-          <span id="scan-btn-text">🚀 شروع اسکن</span>
-        </button>
+      <a href="#donate" style="color:var(--purple)">💜 حمایت</a>
+      <a href="https://github.com/mirrorman/mirrorman">GitHub</a>
+      <a href="CONTRIBUTING.md">مشارکت</a>
+    </div>
+    <div
+      style="margin:18px auto;max-width:480px;padding:16px 24px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;">
+      <span style="font-size:1.4rem">👨‍💻</span>
+      <div style="text-align:right">
+        <div style="font-weight:700;font-size:0.9rem;color:var(--text)">امید ناطقی</div>
+        <a href="https://solamente0.github.io" target="_blank" rel="noopener"
+          style="font-family:var(--mono);font-size:0.72rem;color:var(--accent);text-decoration:none;">
+          solamente0.github.io ↗
+        </a>
       </div>
     </div>
-    <p style="color:var(--text2);font-size:0.85rem;margin-bottom:8px;">
-      این ابزار با اتصال واقعی به هر میرور، سرعت آن‌ها را اندازه‌گیری کرده و سریع‌ترین را پیشنهاد می‌دهد.
-    </p>
-    <div class="scan-results" id="scan-results"></div>
-  </div>
+    <p>MirrorMan v1.0.0 — ساخته شده با ❤️ برای توسعه‌دهندگان ایرانی و سایر شبکه‌های محدود</p>
+    <p style="margin-top:6px;font-size:0.72rem">داده‌ها از <code>data/mirrors.json</code> بارگذاری می‌شوند — برای
+      به‌روزرسانی فایل JSON را ویرایش کنید</p>
+  </footer>
 
-  <!-- ── DNS ── -->
-  <div class="scanner-section" id="dns">
-    <div class="scanner-header">
-      <div class="scanner-title">🌐 سرورهای DNS پیشنهادی</div>
-      <button class="btn btn-secondary" onclick="testDNS()">🔄 تست سرعت</button>
-    </div>
-    <p style="color:var(--text2);font-size:0.85rem;margin-bottom:12px;">
-      برای دسترسی بهتر به میرورها، استفاده از DNS مناسب توصیه می‌شود.
-    </p>
-    <div class="dns-grid" id="dns-grid"></div>
-  </div>
+  <div id="toast"><span class="toast-icon">✅</span><span id="toast-msg">کپی شد!</span></div>
 
-  <!-- ── Guide ── -->
-  <div class="guide-section" id="guide">
-    <div class="guide-header">
-      <h2>📚 راهنمای نصب و استفاده</h2>
-    </div>
-    <div class="guide-tabs">
-      <button class="guide-tab active" onclick="showGuide('install', this)">نصب MirrorMan</button>
-      <button class="guide-tab" onclick="showGuide('linux', this)">Linux/macOS</button>
-      <button class="guide-tab" onclick="showGuide('windows', this)">Windows</button>
-      <button class="guide-tab" onclick="showGuide('temp', this)">استفاده موقت</button>
-      <button class="guide-tab" onclick="showGuide('custom', this)">میرور سفارشی</button>
-    </div>
+  <script>
+    // ── Data ──────────────────────────────────────────────────────────────────────
+    // In production, this is loaded from data/mirrors.json via fetch()
+    // For standalone HTML, data is embedded here:
+    const MIRRORS_DATA = {
+      "_meta": { "version": "1.0.0", "last_updated": "2025-01-01" },
+      "languages": {
+        "python": {
+          "name": "Python (pip)", "icon": "🐍", "category": "general",
+          "env_var": "PIP_INDEX_URL", "default_registry": "https://pypi.org/simple/",
+          "mirrors": [
+            { "id": "tsinghua", "name": "Tsinghua University", "url": "https://pypi.tuna.tsinghua.edu.cn/simple/", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "محبوب‌ترین میرور آسیا" },
+            { "id": "aliyun", "name": "Aliyun (Alibaba)", "url": "https://mirrors.aliyun.com/pypi/simple/", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "" },
+            { "id": "ustc", "name": "USTC Mirror", "url": "https://mirrors.ustc.edu.cn/pypi/web/simple/", "country": "CN", "flag": "🇨🇳", "speed": "medium", "last_updated": "2025-01-01", "notes": "" },
+            { "id": "douban", "name": "Douban", "url": "https://pypi.doubanio.com/simple/", "country": "CN", "flag": "🇨🇳", "speed": "medium", "last_updated": "2024-06-01", "notes": "" }
+          ],
+          "usage": { "temp": "pip install {package} -i {mirror_url}", "permanent_linux": "pip config set global.index-url {mirror_url}", "permanent_win": "pip config set global.index-url {mirror_url}" }
+        },
+        "npm": {
+          "name": "Node.js (npm)", "icon": "📦", "category": "javascript",
+          "env_var": "npm_config_registry", "default_registry": "https://registry.npmjs.org/",
+          "mirrors": [
+            { "id": "taobao", "name": "Taobao NPM (npmmirror)", "url": "https://registry.npmmirror.com/", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "پیشنهادی" },
+            { "id": "tencent", "name": "Tencent Cloud", "url": "https://mirrors.cloud.tencent.com/npm/", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "" },
+            { "id": "huawei", "name": "Huawei Cloud", "url": "https://mirrors.huaweicloud.com/repository/npm/", "country": "CN", "flag": "🇨🇳", "speed": "medium", "last_updated": "2025-01-01", "notes": "" }
+          ],
+          "usage": { "temp": "npm install {package} --registry {mirror_url}", "permanent_linux": "npm config set registry {mirror_url}", "permanent_win": "npm config set registry {mirror_url}" }
+        },
+        "docker": {
+          "name": "Docker Hub", "icon": "🐋", "category": "devops",
+          "env_var": "", "default_registry": "https://registry-1.docker.io",
+          "mirrors": [
+            { "id": "aliyun_docker", "name": "Aliyun Docker", "url": "https://registry.cn-hangzhou.aliyuncs.com", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "نیاز به اکانت Aliyun" },
+            { "id": "163", "name": "163 (NetEase)", "url": "https://hub-mirror.c.163.com", "country": "CN", "flag": "🇨🇳", "speed": "medium", "last_updated": "2024-09-01", "notes": "" },
+            { "id": "ustc_docker", "name": "USTC Docker", "url": "https://docker.mirrors.ustc.edu.cn", "country": "CN", "flag": "🇨🇳", "speed": "medium", "last_updated": "2024-12-01", "notes": "" },
+            { "id": "dockerproxy", "name": "Docker Proxy", "url": "https://dockerproxy.com", "country": "GLOBAL", "flag": "🌐", "speed": "medium", "last_updated": "2025-01-01", "notes": "سرویس پروکسی جهانی" }
+          ],
+          "usage": { "temp": "docker pull {mirror_host}/{image}", "permanent_linux": "Edit /etc/docker/daemon.json", "permanent_win": "Docker Desktop > Settings > Docker Engine" }
+        },
+        "golang": {
+          "name": "Go (GOPROXY)", "icon": "🐹", "category": "general",
+          "env_var": "GOPROXY", "default_registry": "https://proxy.golang.org,direct",
+          "mirrors": [
+            { "id": "goproxy_cn", "name": "GOPROXY.CN", "url": "https://goproxy.cn,direct", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "قابل اعتمادترین برای چین" },
+            { "id": "goproxy_io", "name": "GOPROXY.IO", "url": "https://goproxy.io,direct", "country": "GLOBAL", "flag": "🌐", "speed": "fast", "last_updated": "2025-01-01", "notes": "CDN جهانی" },
+            { "id": "aliyun_go", "name": "Aliyun Go Proxy", "url": "https://mirrors.aliyun.com/goproxy/,direct", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "" }
+          ],
+          "usage": { "temp": "GOPROXY={mirror_url} go get {package}", "permanent_linux": "go env -w GOPROXY={mirror_url}", "permanent_win": "go env -w GOPROXY={mirror_url}" }
+        },
+        "rust": {
+          "name": "Rust (Cargo)", "icon": "🦀", "category": "systems",
+          "env_var": "", "default_registry": "https://crates.io",
+          "mirrors": [
+            { "id": "tuna_rust", "name": "Tsinghua (Rust)", "url": "https://mirrors.tuna.tsinghua.edu.cn/crates.io-index", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "" },
+            { "id": "ustc_rust", "name": "USTC Rust", "url": "https://mirrors.ustc.edu.cn/crates.io-index", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "" },
+            { "id": "rsproxy", "name": "RsProxy (ByteDance)", "url": "https://rsproxy.cn", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "میرور رسمی ByteDance" }
+          ],
+          "usage": { "temp": "در ~/.cargo/config.toml تنظیم کنید", "permanent_linux": "[source.crates-io]\\nreplace-with = 'mirror'", "permanent_win": "در %USERPROFILE%\\.cargo\\config.toml" }
+        },
+        "java": {
+          "name": "Java (Maven)", "icon": "☕", "category": "jvm",
+          "env_var": "", "default_registry": "https://repo.maven.apache.org/maven2",
+          "mirrors": [
+            { "id": "aliyun_maven", "name": "Aliyun Maven", "url": "https://maven.aliyun.com/repository/public", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "محبوب‌ترین Maven mirror" },
+            { "id": "huawei_maven", "name": "Huawei Maven", "url": "https://mirrors.huaweicloud.com/repository/maven/", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "" }
+          ],
+          "usage": { "temp": "mvn install -Dmaven.repo.remote={mirror_url}", "permanent_linux": "در ~/.m2/settings.xml", "permanent_win": "در %USERPROFILE%\\.m2\\settings.xml" }
+        },
+        "ruby": {
+          "name": "Ruby (RubyGems)", "icon": "💎", "category": "scripting",
+          "env_var": "", "default_registry": "https://rubygems.org",
+          "mirrors": [
+            { "id": "tuna_ruby", "name": "Tsinghua (Ruby)", "url": "https://mirrors.tuna.tsinghua.edu.cn/rubygems/", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "" },
+            { "id": "aliyun_ruby", "name": "Aliyun Ruby", "url": "https://mirrors.aliyun.com/rubygems/", "country": "CN", "flag": "🇨🇳", "speed": "medium", "last_updated": "2024-12-01", "notes": "" }
+          ],
+          "usage": { "temp": "gem install {package} --source {mirror_url}", "permanent_linux": "gem sources --add {mirror_url}", "permanent_win": "gem sources --add {mirror_url}" }
+        },
+        "linux": {
+          "name": "Linux (apt/yum/pacman)", "icon": "🐧", "category": "os",
+          "env_var": "", "default_registry": "بستگی به توزیع دارد",
+          "mirrors": [
+            { "id": "tuna_linux", "name": "Tsinghua University", "url": "https://mirrors.tuna.tsinghua.edu.cn/", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "Ubuntu، Debian، CentOS، Arch..." },
+            { "id": "aliyun_linux", "name": "Aliyun Linux", "url": "https://mirrors.aliyun.com/", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "" },
+            { "id": "ustc_linux", "name": "USTC Linux", "url": "https://mirrors.ustc.edu.cn/", "country": "CN", "flag": "🇨🇳", "speed": "medium", "last_updated": "2025-01-01", "notes": "" },
+            { "id": "163_linux", "name": "163 (NetEase)", "url": "https://mirrors.163.com/", "country": "CN", "flag": "🇨🇳", "speed": "medium", "last_updated": "2024-10-01", "notes": "" }
+          ],
+          "usage": { "temp": "apt-get -o Acquire::http::Proxy={mirror_url} install {pkg}", "permanent_linux": "ویرایش /etc/apt/sources.list", "permanent_win": "N/A" }
+        }
+      },
+      "dns_servers": [
+        { "name": "Google DNS", "ip": "8.8.8.8", "country": "🇺🇸 US" },
+        { "name": "Cloudflare DNS", "ip": "1.1.1.1", "country": "🇺🇸 US" },
+        { "name": "OpenDNS", "ip": "208.67.222.222", "country": "🇺🇸 US" },
+        { "name": "Quad9", "ip": "9.9.9.9", "country": "🇺🇸 US" },
+        { "name": "Shecan", "ip": "178.22.122.100", "country": "🇮🇷 IR" },
+        { "name": "403.online", "ip": "10.202.10.202", "country": "🇮🇷 IR" },
+        { "name": "Electrotm", "ip": "78.157.42.100", "country": "🇮🇷 IR" },
+        { "name": "Begzar", "ip": "185.55.226.26", "country": "🇮🇷 IR" }
+      ]
+    };
 
-    <div class="guide-content active" id="guide-install">
-      <h3>نصب MirrorMan</h3>
-      <p>برای نصب پروژه، ابتدا ریپوزیتوری را کلون کنید:</p>
-      <div class="code-block">
-        <div class="code-header"><span class="code-lang-tag">bash</span> <button class="copy-btn" onclick="copyCode(this)">کپی</button></div>
-        <div class="code-body"><span class="cmt"># Clone the repository</span>
-<span class="kw">git</span> clone https://github.com/mirrorman/mirrorman.git
-<span class="kw">cd</span> mirrorman
+    // ── State ─────────────────────────────────────────────────────────────────────
+    let activeFilter = 'all';
+    let searchQuery = '';
+    let selectedMirrors = {}; // lang -> mirror_id
 
-<span class="cmt"># Make executable (Linux/macOS)</span>
-<span class="kw">chmod</span> +x bin/mirrorman.sh
-<span class="kw">sudo</span> ln -s $(<span class="kw">pwd</span>)/bin/mirrorman.sh /usr/local/bin/mirrorman
-
-<span class="cmt"># Install shell aliases</span>
-mirrorman alias install</div>
-      </div>
-      <p>برای ویندوز، از PowerShell استفاده کنید:</p>
-      <div class="code-block">
-        <div class="code-header"><span class="code-lang-tag">powershell</span> <button class="copy-btn" onclick="copyCode(this)">کپی</button></div>
-        <div class="code-body"><span class="cmt"># Add to PATH or call directly</span>
-.\bin\mirrorman.ps1 help</div>
-      </div>
-    </div>
-
-    <div class="guide-content" id="guide-linux">
-      <h3>استفاده در Linux و macOS</h3>
-      <div class="code-block">
-        <div class="code-header"><span class="code-lang-tag">bash</span> <button class="copy-btn" onclick="copyCode(this)">کپی</button></div>
-        <div class="code-body"><span class="cmt"># لیست همه میرورها</span>
-<span class="kw">mirrorman</span> list
-
-<span class="cmt"># اسکن سریع‌ترین میرور برای Python</span>
-<span class="kw">mirrorman</span> scan python
-
-<span class="cmt"># اعمال دائمی میرور</span>
-<span class="kw">mirrorman</span> set python tsinghua
-
-<span class="cmt"># نمایش وضعیت فعلی</span>
-<span class="kw">mirrorman</span> status
-
-<span class="cmt"># بازگشت به حالت پیش‌فرض</span>
-<span class="kw">mirrorman</span> reset python</div>
-      </div>
-    </div>
-
-    <div class="guide-content" id="guide-windows">
-      <h3>استفاده در Windows (PowerShell)</h3>
-      <div class="code-block">
-        <div class="code-header"><span class="code-lang-tag">powershell</span> <button class="copy-btn" onclick="copyCode(this)">کپی</button></div>
-        <div class="code-body"><span class="cmt"># لیست میرورها</span>
-.\mirrorman.ps1 list
-
-<span class="cmt"># اسکن سرعت</span>
-.\mirrorman.ps1 scan python
-
-<span class="cmt"># اعمال دائمی</span>
-.\mirrorman.ps1 set python tsinghua
-
-<span class="cmt"># اعمال موقت (فقط برای این session)</span>
-.\mirrorman.ps1 set npm taobao -Temp
-
-<span class="cmt"># بازگشت به پیش‌فرض</span>
-.\mirrorman.ps1 reset npm</div>
-      </div>
-    </div>
-
-    <div class="guide-content" id="guide-temp">
-      <h3>استفاده موقت (بدون تغییر دائمی)</h3>
-      <p>برای اجرای یک دستور با میرور خاص، بدون تغییر تنظیمات سیستم:</p>
-      <div class="code-block">
-        <div class="code-header"><span class="code-lang-tag">bash</span> <button class="copy-btn" onclick="copyCode(this)">کپی</button></div>
-        <div class="code-body"><span class="cmt"># یک دستور با میرور موقت</span>
-<span class="kw">mirrorman</span> use python tsinghua -- pip install requests
-
-<span class="cmt"># npm با میرور taobao</span>
-<span class="kw">mirrorman</span> use npm taobao -- npm install express
-
-<span class="cmt"># go get با میرور چینی</span>
-<span class="kw">mirrorman</span> use golang goproxy_cn -- go get golang.org/x/tools
-
-<span class="cmt"># یا از alias های پیش‌فرض</span>
-<span class="kw">pip-cn</span> install requests
-<span class="kw">npm-cn</span> install express
-<span class="kw">go-cn</span> golang.org/x/tools</div>
-      </div>
-    </div>
-
-    <div class="guide-content" id="guide-custom">
-      <h3>افزودن میرور سفارشی</h3>
-      <p>می‌توانید میرور اختصاصی سازمان یا خود را اضافه کنید:</p>
-      <div class="code-block">
-        <div class="code-header"><span class="code-lang-tag">bash</span> <button class="copy-btn" onclick="copyCode(this)">کپی</button></div>
-        <div class="code-body"><span class="cmt"># افزودن میرور اختصاصی</span>
-<span class="kw">mirrorman</span> add python <span class="str">corporate</span> <span class="str">"PyPI شرکت ما"</span> https://pypi.company.com/simple/
-
-<span class="cmt"># سپس مثل بقیه استفاده کنید</span>
-<span class="kw">mirrorman</span> set python corporate
-
-<span class="cmt"># میرورهای سفارشی در این فایل ذخیره می‌شوند:</span>
-<span class="cmt"># ~/.config/mirrorman/custom_mirrors.json</span></div>
-      </div>
-      <p>یا مستقیماً فایل JSON را ویرایش کنید و میرور دلخواه اضافه کنید.</p>
-    </div>
-  </div>
-
-</main>
-
-<!-- ══════════════════════════════════════════════════════════
-     DONATE SECTION
-     ══════════════════════════════════════════════════════════ -->
-<section class="donate-section" id="donate">
-  <div class="container donate-inner">
-
-    <!-- Header -->
-    <div class="donate-heart-row">
-      <span class="donate-hearts">💜</span>
-      <span class="donate-eyebrow">از ما حمایت کنید</span>
-      <span class="donate-hearts">💜</span>
-    </div>
-
-    <h2 class="donate-title">
-      با <span class="g1">عشق</span> ساخته شد<br>
-      برای توسعه‌دهندگان آزاد
-    </h2>
-
-    <p class="donate-subtitle">
-      MirrorMan را با <strong>افتخار و بدون چشم‌داشت</strong> ساختیم — چون می‌دانیم دردِ
-      برنامه‌نویسی زیرِ سایه محدودیت چقدر سنگین است. اگر این ابزار حتی یک بار کمکتان کرد،
-      با یک حمایت کوچک، نور این پروژه را روشن نگه دارید.
-    </p>
-
-    <!-- Payment Cards -->
-    <div class="donate-grid">
-
-      <!-- ── Crypto ── -->
-      <div class="pay-card crypto">
-        <div class="pay-card-header">
-          <div class="pay-icon">₿</div>
-          <div>
-            <div class="pay-card-title">رمزارز (Crypto)</div>
-            <div class="pay-card-sub">Bitcoin · Ethereum · USDT · TRX</div>
-          </div>
-        </div>
-        <div class="crypto-row">
-
-          <div class="crypto-item" onclick="copyAddr(this,'YOUR_BTC_ADDRESS_HERE')">
-            <div class="crypto-item-head">
-              <span class="crypto-name">₿ Bitcoin</span>
-              <span class="crypto-network">BTC · Native SegWit</span>
-            </div>
-            <div class="crypto-addr">bc1qfw0cmg30lgard7jx66mh85l0ea7kvt38tppe57</div>
-            <div class="copy-hint">👆 کلیک برای کپی آدرس</div>
-          </div>
-
-          <div class="crypto-item" onclick="copyAddr(this,'YOUR_ETH_ADDRESS_HERE')">
-            <div class="crypto-item-head">
-              <span class="crypto-name" style="color:#627eea">Ξ Ethereum / USDT</span>
-              <span class="crypto-network">ERC-20</span>
-            </div>
-            <div class="crypto-addr">0x1410F99B230E87833A7A9E3b4c6ed5C5Cd57A5D8</div>
-            <div class="copy-hint">👆 کلیک برای کپی آدرس</div>
-          </div>
-
-          <div class="crypto-item" onclick="copyAddr(this,'YOUR_USDT_TRC20_ADDRESS_HERE')">
-            <div class="crypto-item-head">
-              <span class="crypto-name" style="color:#26a17b">₮ USDT / TRX</span>
-              <span class="crypto-network">TRC-20</span>
-            </div>
-            <div class="crypto-addr">TPyyZZNrc9naqKzPYEzdmzouAHoXh7M1EA</div>
-            <div class="copy-hint">👆 کلیک برای کپی آدرس</div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ── Iranian Bank ── -->
-      <div class="pay-card card-ir">
-        <div class="pay-card-header">
-          <div class="pay-icon">🏦</div>
-          <div>
-            <div class="pay-card-title">کارت بانکی (ایران)</div>
-            <div class="pay-card-sub">انتقال کارت به کارت</div>
-          </div>
-        </div>
-        <div class="bank-row">
-
-          <div class="bank-item" onclick="copyAddr(this,'6037991922491257')">
-            <div class="bank-label">💳 شماره کارت</div>
-            <div class="bank-value">6037-9919-2249-1257</div>
-            <div class="bank-owner">بانک ملی — امید ناطقی</div>
-            <div class="copy-hint">👆 کلیک برای کپی</div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ── ZarinPal ── -->
-      <div class="pay-card zarinpal">
-        <div class="pay-card-header">
-          <div class="pay-icon">⚡</div>
-          <div>
-            <div class="pay-card-title">زرین‌پال</div>
-            <div class="pay-card-sub">پرداخت آنلاین سریع</div>
-          </div>
-        </div>
-        <div class="zarinpal-wrap">
-          <p style="font-size:0.82rem;color:var(--text2);line-height:1.75;text-align:right;width:100%">
-            راحت‌ترین روش پرداخت برای کاربران ایرانی. فقط یک کلیک، بدون نیاز به وارد کردن آدرس.
-          </p>
-          <a href="https://zarinpal.al/omidnateghi.ir" target="_blank" rel="noopener" class="zarinpal-btn">
-            <span>⚡</span>
-            <span>پرداخت با زرین‌پال</span>
-          </a>
-          <p class="zarinpal-note">
-            پرداخت از طریق <span>درگاه امن زرین‌پال</span> — کارت شتاب همه بانک‌ها
-          </p>
-        </div>
-      </div>
-
-    </div><!-- /donate-grid -->
-
-    <!-- Thank-you note -->
-    <div class="donate-thankyou">
-      <span class="big-heart">🫂</span>
-      <p>
-        هر مبلغی که می‌فرستید، به معنای واقعی کلمه <strong>انگیزه</strong> می‌دهد —
-        نه فقط برای نگه‌داشتن سرورها، بلکه برای اینکه بدانیم این تلاش <strong>دیده می‌شود</strong>.
-        از هر کسی که پروژه را استفاده کرده، به اشتراک گذاشته یا حتی یک ستاره در GitHub زده،
-        از صمیم قلب ممنونیم. 💜
-      </p>
-    </div>
-
-  </div>
-</section>
-
-<footer>
-  <div class="footer-links">
-    <a href="#mirrors">میرورها</a>
-    <a href="#scanner">اسکنر</a>
-    <a href="#dns">DNS</a>
-    <a href="#guide">راهنما</a>
-    <a href="#donate" style="color:var(--purple)">💜 حمایت</a>
-    <a href="https://github.com/mirrorman/mirrorman">GitHub</a>
-    <a href="CONTRIBUTING.md">مشارکت</a>
-  </div>
-  <div style="margin:18px auto;max-width:480px;padding:16px 24px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;">
-    <span style="font-size:1.4rem">👨‍💻</span>
-    <div style="text-align:right">
-      <div style="font-weight:700;font-size:0.9rem;color:var(--text)">امید ناطقی</div>
-      <a href="https://solamente0.github.io" target="_blank" rel="noopener"
-         style="font-family:var(--mono);font-size:0.72rem;color:var(--accent);text-decoration:none;">
-        solamente0.github.io ↗
-      </a>
-    </div>
-  </div>
-  <p>MirrorMan v1.0.0 — ساخته شده با ❤️ برای توسعه‌دهندگان ایرانی و سایر شبکه‌های محدود</p>
-  <p style="margin-top:6px;font-size:0.72rem">داده‌ها از <code>data/mirrors.json</code> بارگذاری می‌شوند — برای به‌روزرسانی فایل JSON را ویرایش کنید</p>
-</footer>
-
-<div id="toast"><span class="toast-icon">✅</span><span id="toast-msg">کپی شد!</span></div>
-
-<script>
-// ── Data ──────────────────────────────────────────────────────────────────────
-// In production, this is loaded from data/mirrors.json via fetch()
-// For standalone HTML, data is embedded here:
-const MIRRORS_DATA = {
-  "_meta": { "version": "1.0.0", "last_updated": "2025-01-01" },
-  "languages": {
-    "python": {
-      "name": "Python (pip)", "icon": "🐍", "category": "general",
-      "env_var": "PIP_INDEX_URL", "default_registry": "https://pypi.org/simple/",
-      "mirrors": [
-        { "id": "tsinghua", "name": "Tsinghua University", "url": "https://pypi.tuna.tsinghua.edu.cn/simple/", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "محبوب‌ترین میرور آسیا" },
-        { "id": "aliyun",   "name": "Aliyun (Alibaba)", "url": "https://mirrors.aliyun.com/pypi/simple/", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "" },
-        { "id": "ustc",     "name": "USTC Mirror", "url": "https://mirrors.ustc.edu.cn/pypi/web/simple/", "country": "CN", "flag": "🇨🇳", "speed": "medium", "last_updated": "2025-01-01", "notes": "" },
-        { "id": "douban",   "name": "Douban", "url": "https://pypi.doubanio.com/simple/", "country": "CN", "flag": "🇨🇳", "speed": "medium", "last_updated": "2024-06-01", "notes": "" }
-      ],
-      "usage": { "temp": "pip install {package} -i {mirror_url}", "permanent_linux": "pip config set global.index-url {mirror_url}", "permanent_win": "pip config set global.index-url {mirror_url}" }
-    },
-    "npm": {
-      "name": "Node.js (npm)", "icon": "📦", "category": "javascript",
-      "env_var": "npm_config_registry", "default_registry": "https://registry.npmjs.org/",
-      "mirrors": [
-        { "id": "taobao",   "name": "Taobao NPM (npmmirror)", "url": "https://registry.npmmirror.com/", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "پیشنهادی" },
-        { "id": "tencent",  "name": "Tencent Cloud", "url": "https://mirrors.cloud.tencent.com/npm/", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "" },
-        { "id": "huawei",   "name": "Huawei Cloud", "url": "https://mirrors.huaweicloud.com/repository/npm/", "country": "CN", "flag": "🇨🇳", "speed": "medium", "last_updated": "2025-01-01", "notes": "" }
-      ],
-      "usage": { "temp": "npm install {package} --registry {mirror_url}", "permanent_linux": "npm config set registry {mirror_url}", "permanent_win": "npm config set registry {mirror_url}" }
-    },
-    "docker": {
-      "name": "Docker Hub", "icon": "🐋", "category": "devops",
-      "env_var": "", "default_registry": "https://registry-1.docker.io",
-      "mirrors": [
-        { "id": "aliyun_docker", "name": "Aliyun Docker", "url": "https://registry.cn-hangzhou.aliyuncs.com", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "نیاز به اکانت Aliyun" },
-        { "id": "163",           "name": "163 (NetEase)", "url": "https://hub-mirror.c.163.com", "country": "CN", "flag": "🇨🇳", "speed": "medium", "last_updated": "2024-09-01", "notes": "" },
-        { "id": "ustc_docker",   "name": "USTC Docker", "url": "https://docker.mirrors.ustc.edu.cn", "country": "CN", "flag": "🇨🇳", "speed": "medium", "last_updated": "2024-12-01", "notes": "" },
-        { "id": "dockerproxy",   "name": "Docker Proxy", "url": "https://dockerproxy.com", "country": "GLOBAL", "flag": "🌐", "speed": "medium", "last_updated": "2025-01-01", "notes": "سرویس پروکسی جهانی" }
-      ],
-      "usage": { "temp": "docker pull {mirror_host}/{image}", "permanent_linux": "Edit /etc/docker/daemon.json", "permanent_win": "Docker Desktop > Settings > Docker Engine" }
-    },
-    "golang": {
-      "name": "Go (GOPROXY)", "icon": "🐹", "category": "general",
-      "env_var": "GOPROXY", "default_registry": "https://proxy.golang.org,direct",
-      "mirrors": [
-        { "id": "goproxy_cn", "name": "GOPROXY.CN", "url": "https://goproxy.cn,direct", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "قابل اعتمادترین برای چین" },
-        { "id": "goproxy_io", "name": "GOPROXY.IO", "url": "https://goproxy.io,direct", "country": "GLOBAL", "flag": "🌐", "speed": "fast", "last_updated": "2025-01-01", "notes": "CDN جهانی" },
-        { "id": "aliyun_go",  "name": "Aliyun Go Proxy", "url": "https://mirrors.aliyun.com/goproxy/,direct", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "" }
-      ],
-      "usage": { "temp": "GOPROXY={mirror_url} go get {package}", "permanent_linux": "go env -w GOPROXY={mirror_url}", "permanent_win": "go env -w GOPROXY={mirror_url}" }
-    },
-    "rust": {
-      "name": "Rust (Cargo)", "icon": "🦀", "category": "systems",
-      "env_var": "", "default_registry": "https://crates.io",
-      "mirrors": [
-        { "id": "tuna_rust", "name": "Tsinghua (Rust)", "url": "https://mirrors.tuna.tsinghua.edu.cn/crates.io-index", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "" },
-        { "id": "ustc_rust", "name": "USTC Rust", "url": "https://mirrors.ustc.edu.cn/crates.io-index", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "" },
-        { "id": "rsproxy",   "name": "RsProxy (ByteDance)", "url": "https://rsproxy.cn", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "میرور رسمی ByteDance" }
-      ],
-      "usage": { "temp": "در ~/.cargo/config.toml تنظیم کنید", "permanent_linux": "[source.crates-io]\\nreplace-with = 'mirror'", "permanent_win": "در %USERPROFILE%\\.cargo\\config.toml" }
-    },
-    "java": {
-      "name": "Java (Maven)", "icon": "☕", "category": "jvm",
-      "env_var": "", "default_registry": "https://repo.maven.apache.org/maven2",
-      "mirrors": [
-        { "id": "aliyun_maven", "name": "Aliyun Maven", "url": "https://maven.aliyun.com/repository/public", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "محبوب‌ترین Maven mirror" },
-        { "id": "huawei_maven", "name": "Huawei Maven",  "url": "https://mirrors.huaweicloud.com/repository/maven/", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "" }
-      ],
-      "usage": { "temp": "mvn install -Dmaven.repo.remote={mirror_url}", "permanent_linux": "در ~/.m2/settings.xml", "permanent_win": "در %USERPROFILE%\\.m2\\settings.xml" }
-    },
-    "ruby": {
-      "name": "Ruby (RubyGems)", "icon": "💎", "category": "scripting",
-      "env_var": "", "default_registry": "https://rubygems.org",
-      "mirrors": [
-        { "id": "tuna_ruby",  "name": "Tsinghua (Ruby)", "url": "https://mirrors.tuna.tsinghua.edu.cn/rubygems/", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "" },
-        { "id": "aliyun_ruby","name": "Aliyun Ruby", "url": "https://mirrors.aliyun.com/rubygems/", "country": "CN", "flag": "🇨🇳", "speed": "medium", "last_updated": "2024-12-01", "notes": "" }
-      ],
-      "usage": { "temp": "gem install {package} --source {mirror_url}", "permanent_linux": "gem sources --add {mirror_url}", "permanent_win": "gem sources --add {mirror_url}" }
-    },
-    "linux": {
-      "name": "Linux (apt/yum/pacman)", "icon": "🐧", "category": "os",
-      "env_var": "", "default_registry": "بستگی به توزیع دارد",
-      "mirrors": [
-        { "id": "tuna_linux",  "name": "Tsinghua University", "url": "https://mirrors.tuna.tsinghua.edu.cn/", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "Ubuntu، Debian، CentOS، Arch..." },
-        { "id": "aliyun_linux","name": "Aliyun Linux", "url": "https://mirrors.aliyun.com/", "country": "CN", "flag": "🇨🇳", "speed": "fast", "last_updated": "2025-01-01", "notes": "" },
-        { "id": "ustc_linux",  "name": "USTC Linux", "url": "https://mirrors.ustc.edu.cn/", "country": "CN", "flag": "🇨🇳", "speed": "medium", "last_updated": "2025-01-01", "notes": "" },
-        { "id": "163_linux",   "name": "163 (NetEase)", "url": "https://mirrors.163.com/", "country": "CN", "flag": "🇨🇳", "speed": "medium", "last_updated": "2024-10-01", "notes": "" }
-      ],
-      "usage": { "temp": "apt-get -o Acquire::http::Proxy={mirror_url} install {pkg}", "permanent_linux": "ویرایش /etc/apt/sources.list", "permanent_win": "N/A" }
-    }
-  },
-  "dns_servers": [
-    { "name": "Google DNS",     "ip": "8.8.8.8",         "country": "🇺🇸 US" },
-    { "name": "Cloudflare DNS", "ip": "1.1.1.1",         "country": "🇺🇸 US" },
-    { "name": "OpenDNS",        "ip": "208.67.222.222",  "country": "🇺🇸 US" },
-    { "name": "Quad9",          "ip": "9.9.9.9",         "country": "🇺🇸 US" },
-    { "name": "Shecan",         "ip": "178.22.122.100",  "country": "🇮🇷 IR" },
-    { "name": "403.online",     "ip": "10.202.10.202",   "country": "🇮🇷 IR" },
-    { "name": "Electrotm",      "ip": "78.157.42.100",   "country": "🇮🇷 IR" },
-    { "name": "Begzar",         "ip": "185.55.226.26",   "country": "🇮🇷 IR" }
-  ]
-};
-
-// ── State ─────────────────────────────────────────────────────────────────────
-let activeFilter = 'all';
-let searchQuery  = '';
-let selectedMirrors = {}; // lang -> mirror_id
-
-// ── Init ──────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  initStats();
-  initFilterCounts();
-  renderLanguages();
-  renderDNS();
-  populateScanSelect();
-
-  document.getElementById('search-input').addEventListener('input', e => {
-    searchQuery = e.target.value.toLowerCase();
-    renderLanguages();
-  });
-
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeFilter = btn.dataset.cat;
+    // ── Init ──────────────────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      initStats();
+      initFilterCounts();
       renderLanguages();
+      renderDNS();
+      populateScanSelect();
+
+      document.getElementById('search-input').addEventListener('input', e => {
+        searchQuery = e.target.value.toLowerCase();
+        renderLanguages();
+      });
+
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeFilter = btn.dataset.cat;
+          renderLanguages();
+        });
+      });
     });
-  });
-});
 
-function initStats() {
-  const langs = Object.keys(MIRRORS_DATA.languages);
-  const totalMirrors = langs.reduce((a, l) => a + MIRRORS_DATA.languages[l].mirrors.length, 0);
-  const countries = new Set();
-  langs.forEach(l => MIRRORS_DATA.languages[l].mirrors.forEach(m => countries.add(m.country)));
+    function initStats() {
+      const langs = Object.keys(MIRRORS_DATA.languages);
+      const totalMirrors = langs.reduce((a, l) => a + MIRRORS_DATA.languages[l].mirrors.length, 0);
+      const countries = new Set();
+      langs.forEach(l => MIRRORS_DATA.languages[l].mirrors.forEach(m => countries.add(m.country)));
 
-  animateCount('stat-langs', langs.length);
-  animateCount('stat-mirrors', totalMirrors);
-  animateCount('stat-countries', countries.size);
-}
-
-function animateCount(id, target) {
-  const el = document.getElementById(id);
-  let current = 0;
-  const step = Math.ceil(target / 30);
-  const timer = setInterval(() => {
-    current = Math.min(current + step, target);
-    el.textContent = current + '+';
-    if (current >= target) { el.textContent = target + '+'; clearInterval(timer); }
-  }, 40);
-}
-
-function initFilterCounts() {
-  const counts = {};
-  Object.values(MIRRORS_DATA.languages).forEach(l => {
-    counts[l.category] = (counts[l.category] || 0) + 1;
-  });
-  const total = Object.keys(MIRRORS_DATA.languages).length;
-  document.getElementById('fc-all').textContent = total;
-  Object.entries(counts).forEach(([cat, cnt]) => {
-    const el = document.getElementById('fc-' + cat);
-    if (el) el.textContent = cnt;
-  });
-}
-
-// ── Render Languages ──────────────────────────────────────────────────────────
-function renderLanguages() {
-  const grid = document.getElementById('languages-grid');
-  const noRes = document.getElementById('no-results');
-  const countEl = document.getElementById('result-count');
-  grid.innerHTML = '';
-
-  const langs = Object.entries(MIRRORS_DATA.languages).filter(([id, lang]) => {
-    if (activeFilter !== 'all' && lang.category !== activeFilter) return false;
-    if (searchQuery) {
-      const q = searchQuery;
-      return id.includes(q) || lang.name.toLowerCase().includes(q) ||
-        lang.category.includes(q) ||
-        lang.mirrors.some(m => m.name.toLowerCase().includes(q) || m.id.includes(q));
+      animateCount('stat-langs', langs.length);
+      animateCount('stat-mirrors', totalMirrors);
+      animateCount('stat-countries', countries.size);
     }
-    return true;
-  });
 
-  countEl.textContent = langs.length + ' زبان/ابزار';
+    function animateCount(id, target) {
+      const el = document.getElementById(id);
+      let current = 0;
+      const step = Math.ceil(target / 30);
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = current + '+';
+        if (current >= target) { el.textContent = target + '+'; clearInterval(timer); }
+      }, 40);
+    }
 
-  if (langs.length === 0) {
-    noRes.classList.add('visible');
-    return;
-  }
-  noRes.classList.remove('visible');
+    function initFilterCounts() {
+      const counts = {};
+      Object.values(MIRRORS_DATA.languages).forEach(l => {
+        counts[l.category] = (counts[l.category] || 0) + 1;
+      });
+      const total = Object.keys(MIRRORS_DATA.languages).length;
+      document.getElementById('fc-all').textContent = total;
+      Object.entries(counts).forEach(([cat, cnt]) => {
+        const el = document.getElementById('fc-' + cat);
+        if (el) el.textContent = cnt;
+      });
+    }
 
-  langs.forEach(([id, lang]) => {
-    grid.appendChild(buildLangCard(id, lang));
-  });
-}
+    // ── Render Languages ──────────────────────────────────────────────────────────
+    function renderLanguages() {
+      const grid = document.getElementById('languages-grid');
+      const noRes = document.getElementById('no-results');
+      const countEl = document.getElementById('result-count');
+      grid.innerHTML = '';
 
-function buildLangCard(id, lang) {
-  const card = document.createElement('div');
-  card.className = 'lang-card';
-  card.dataset.lang = id;
+      const langs = Object.entries(MIRRORS_DATA.languages).filter(([id, lang]) => {
+        if (activeFilter !== 'all' && lang.category !== activeFilter) return false;
+        if (searchQuery) {
+          const q = searchQuery;
+          return id.includes(q) || lang.name.toLowerCase().includes(q) ||
+            lang.category.includes(q) ||
+            lang.mirrors.some(m => m.name.toLowerCase().includes(q) || m.id.includes(q));
+        }
+        return true;
+      });
 
-  const selectedId = selectedMirrors[id] || (lang.mirrors[0] && lang.mirrors[0].id) || '';
-  const selectedMirror = lang.mirrors.find(m => m.id === selectedId) || lang.mirrors[0];
+      countEl.textContent = langs.length + ' زبان/ابزار';
 
-  const mirrorsHTML = lang.mirrors.map(m => `
+      if (langs.length === 0) {
+        noRes.classList.add('visible');
+        return;
+      }
+      noRes.classList.remove('visible');
+
+      langs.forEach(([id, lang]) => {
+        grid.appendChild(buildLangCard(id, lang));
+      });
+    }
+
+    function buildLangCard(id, lang) {
+      const card = document.createElement('div');
+      card.className = 'lang-card';
+      card.dataset.lang = id;
+
+      const selectedId = selectedMirrors[id] || (lang.mirrors[0] && lang.mirrors[0].id) || '';
+      const selectedMirror = lang.mirrors.find(m => m.id === selectedId) || lang.mirrors[0];
+
+      const mirrorsHTML = lang.mirrors.map(m => `
     <div class="mirror-item ${m.id === selectedId ? 'selected' : ''}"
          data-lang="${id}" data-id="${m.id}"
          onclick="selectMirror('${id}', '${m.id}', this)">
@@ -1741,11 +2537,11 @@ function buildLangCard(id, lang) {
     </div>
   `).join('');
 
-  const usageTemp = (lang.usage.temp || '').replace('{mirror_url}', selectedMirror ? selectedMirror.url : 'URL');
-  const usageLinux = (lang.usage.permanent_linux || '').replace('{mirror_url}', selectedMirror ? selectedMirror.url : 'URL');
-  const usageWin = (lang.usage.permanent_win || '').replace('{mirror_url}', selectedMirror ? selectedMirror.url : 'URL');
+      const usageTemp = (lang.usage.temp || '').replace('{mirror_url}', selectedMirror ? selectedMirror.url : 'URL');
+      const usageLinux = (lang.usage.permanent_linux || '').replace('{mirror_url}', selectedMirror ? selectedMirror.url : 'URL');
+      const usageWin = (lang.usage.permanent_win || '').replace('{mirror_url}', selectedMirror ? selectedMirror.url : 'URL');
 
-  card.innerHTML = `
+      card.innerHTML = `
     <div class="lang-header">
       <div class="lang-title">
         <span class="lang-icon">${lang.icon}</span>
@@ -1773,180 +2569,180 @@ function buildLangCard(id, lang) {
     </div>
   `;
 
-  return card;
-}
+      return card;
+    }
 
-function speedLabel(s) {
-  return { fast: '⚡ سریع', medium: '🟡 متوسط', slow: '🔴 کند', unknown: '⬜ نامعلوم' }[s] || s;
-}
+    function speedLabel(s) {
+      return { fast: '⚡ سریع', medium: '🟡 متوسط', slow: '🔴 کند', unknown: '⬜ نامعلوم' }[s] || s;
+    }
 
-function escHTML(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function escHTML(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
-function selectMirror(langId, mirrorId, el) {
-  selectedMirrors[langId] = mirrorId;
-  // Update selected class
-  const card = el.closest('.lang-card');
-  card.querySelectorAll('.mirror-item').forEach(item => item.classList.remove('selected'));
-  el.classList.add('selected');
-  // Update command
-  updateCmd(langId, mirrorId);
-}
+    function selectMirror(langId, mirrorId, el) {
+      selectedMirrors[langId] = mirrorId;
+      // Update selected class
+      const card = el.closest('.lang-card');
+      card.querySelectorAll('.mirror-item').forEach(item => item.classList.remove('selected'));
+      el.classList.add('selected');
+      // Update command
+      updateCmd(langId, mirrorId);
+    }
 
-function updateCmd(langId, mirrorId) {
-  const lang = MIRRORS_DATA.languages[langId];
-  const mirror = lang.mirrors.find(m => m.id === mirrorId);
-  if (!mirror) return;
+    function updateCmd(langId, mirrorId) {
+      const lang = MIRRORS_DATA.languages[langId];
+      const mirror = lang.mirrors.find(m => m.id === mirrorId);
+      if (!mirror) return;
 
-  const el = document.getElementById('cmd-text-' + langId);
-  if (!el) return;
+      const el = document.getElementById('cmd-text-' + langId);
+      if (!el) return;
 
-  const activeTab = el.closest('.lang-footer').querySelector('.cmd-tab.active');
-  const mode = activeTab ? activeTab.textContent.trim() : 'موقت';
+      const activeTab = el.closest('.lang-footer').querySelector('.cmd-tab.active');
+      const mode = activeTab ? activeTab.textContent.trim() : 'موقت';
 
-  let cmd = '';
-  if (mode === 'موقت' || mode.includes('موقت')) {
-    cmd = (lang.usage.temp || '').replace('{mirror_url}', mirror.url).replace('{package}', '<package>');
-  } else if (mode === 'Linux/macOS') {
-    cmd = (lang.usage.permanent_linux || '').replace('{mirror_url}', mirror.url);
-  } else {
-    cmd = (lang.usage.permanent_win || '').replace('{mirror_url}', mirror.url);
-  }
-  el.textContent = cmd;
-}
+      let cmd = '';
+      if (mode === 'موقت' || mode.includes('موقت')) {
+        cmd = (lang.usage.temp || '').replace('{mirror_url}', mirror.url).replace('{package}', '<package>');
+      } else if (mode === 'Linux/macOS') {
+        cmd = (lang.usage.permanent_linux || '').replace('{mirror_url}', mirror.url);
+      } else {
+        cmd = (lang.usage.permanent_win || '').replace('{mirror_url}', mirror.url);
+      }
+      el.textContent = cmd;
+    }
 
-function switchCmdTab(btn, langId, mode) {
-  const footer = btn.closest('.lang-footer');
-  footer.querySelectorAll('.cmd-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  const mirrorId = selectedMirrors[langId] || (MIRRORS_DATA.languages[langId].mirrors[0] && MIRRORS_DATA.languages[langId].mirrors[0].id);
-  updateCmd(langId, mirrorId);
-}
+    function switchCmdTab(btn, langId, mode) {
+      const footer = btn.closest('.lang-footer');
+      footer.querySelectorAll('.cmd-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      const mirrorId = selectedMirrors[langId] || (MIRRORS_DATA.languages[langId].mirrors[0] && MIRRORS_DATA.languages[langId].mirrors[0].id);
+      updateCmd(langId, mirrorId);
+    }
 
-// ── Copy ──────────────────────────────────────────────────────────────────────
-function copyMirrorUrl(e, url, btn) {
-  e.stopPropagation();
-  navigator.clipboard.writeText(url).then(() => {
-    btn.textContent = '✅ کپی شد';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'کپی URL'; btn.classList.remove('copied'); }, 2000);
-  });
-  showToast('URL میرور کپی شد!');
-}
+    // ── Copy ──────────────────────────────────────────────────────────────────────
+    function copyMirrorUrl(e, url, btn) {
+      e.stopPropagation();
+      navigator.clipboard.writeText(url).then(() => {
+        btn.textContent = '✅ کپی شد';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'کپی URL'; btn.classList.remove('copied'); }, 2000);
+      });
+      showToast('URL میرور کپی شد!');
+    }
 
-function copyCode(btn) {
-  const block = btn.closest('.cmd-block, .code-block');
-  const text = block.querySelector('.cmd-text, .code-body');
-  if (!text) return;
-  navigator.clipboard.writeText(text.innerText).then(() => {
-    btn.textContent = '✅';
-    setTimeout(() => { btn.textContent = 'کپی'; }, 2000);
-  });
-  showToast('دستور کپی شد!');
-}
+    function copyCode(btn) {
+      const block = btn.closest('.cmd-block, .code-block');
+      const text = block.querySelector('.cmd-text, .code-body');
+      if (!text) return;
+      navigator.clipboard.writeText(text.innerText).then(() => {
+        btn.textContent = '✅';
+        setTimeout(() => { btn.textContent = 'کپی'; }, 2000);
+      });
+      showToast('دستور کپی شد!');
+    }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  document.getElementById('toast-msg').textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
 
-// ── Scanner ───────────────────────────────────────────────────────────────────
-function populateScanSelect() {
-  const sel = document.getElementById('scan-lang-select');
-  Object.entries(MIRRORS_DATA.languages).forEach(([id, lang]) => {
-    const opt = document.createElement('option');
-    opt.value = id; opt.textContent = `${lang.icon} ${lang.name}`;
-    sel.appendChild(opt);
-  });
-}
+    // ── Scanner ───────────────────────────────────────────────────────────────────
+    function populateScanSelect() {
+      const sel = document.getElementById('scan-lang-select');
+      Object.entries(MIRRORS_DATA.languages).forEach(([id, lang]) => {
+        const opt = document.createElement('option');
+        opt.value = id; opt.textContent = `${lang.icon} ${lang.name}`;
+        sel.appendChild(opt);
+      });
+    }
 
-async function runScan() {
-  const langId = document.getElementById('scan-lang-select').value;
-  if (!langId) { showToast('لطفاً یک زبان انتخاب کنید'); return; }
+    async function runScan() {
+      const langId = document.getElementById('scan-lang-select').value;
+      if (!langId) { showToast('لطفاً یک زبان انتخاب کنید'); return; }
 
-  const lang = MIRRORS_DATA.languages[langId];
-  const resultsEl = document.getElementById('scan-results');
-  const btnText = document.getElementById('scan-btn-text');
+      const lang = MIRRORS_DATA.languages[langId];
+      const resultsEl = document.getElementById('scan-results');
+      const btnText = document.getElementById('scan-btn-text');
 
-  btnText.textContent = '⏳ در حال اسکن...';
-  resultsEl.classList.add('visible');
-  resultsEl.innerHTML = `<div style="color:var(--text3);font-size:0.85rem;margin-bottom:12px">🔍 اسکن میرورهای ${lang.name}...</div>`;
+      btnText.textContent = '⏳ در حال اسکن...';
+      resultsEl.classList.add('visible');
+      resultsEl.innerHTML = `<div style="color:var(--text3);font-size:0.85rem;margin-bottom:12px">🔍 اسکن میرورهای ${lang.name}...</div>`;
 
-  const results = [];
+      const results = [];
 
-  for (const m of lang.mirrors) {
-    const row = document.createElement('div');
-    row.className = 'scan-row scanning';
-    row.innerHTML = `
+      for (const m of lang.mirrors) {
+        const row = document.createElement('div');
+        row.className = 'scan-row scanning';
+        row.innerHTML = `
       <div class="scan-name">${m.flag} ${m.name}</div>
       <div class="scan-bar"><div class="scan-bar-fill" style="width:0%"></div></div>
       <div class="scan-ms">اندازه‌گیری...</div>
     `;
-    resultsEl.appendChild(row);
+        resultsEl.appendChild(row);
 
-    const ms = await measureLatency(m.url);
-    results.push({ ...m, ms });
+        const ms = await measureLatency(m.url);
+        results.push({ ...m, ms });
 
-    const fill = row.querySelector('.scan-bar-fill');
-    const msEl = row.querySelector('.scan-ms');
-    row.classList.remove('scanning');
+        const fill = row.querySelector('.scan-bar-fill');
+        const msEl = row.querySelector('.scan-ms');
+        row.classList.remove('scanning');
 
-    if (ms < 9000) {
-      const pct = Math.max(5, Math.min(100, Math.round((1 - ms / 3000) * 100)));
-      fill.style.width = pct + '%';
-      fill.style.background = ms < 300 ? 'var(--green)' : ms < 800 ? 'var(--yellow)' : 'var(--red)';
-      msEl.textContent = ms + ' ms';
-      msEl.style.color = ms < 300 ? 'var(--green)' : ms < 800 ? 'var(--yellow)' : 'var(--red)';
-    } else {
-      fill.style.width = '3%'; fill.style.background = 'var(--red)';
-      msEl.textContent = 'Timeout'; msEl.style.color = 'var(--red)';
-    }
-  }
-
-  // Mark best
-  results.sort((a, b) => a.ms - b.ms);
-  const best = results[0];
-  if (best && best.ms < 9000) {
-    const rows = resultsEl.querySelectorAll('.scan-row');
-    rows.forEach(row => {
-      if (row.querySelector('.scan-name').textContent.includes(best.name)) {
-        row.classList.add('best');
-        row.querySelector('.scan-ms').insertAdjacentHTML('afterend',
-          `<span class="best-tag">🏆 سریع‌ترین</span>`);
+        if (ms < 9000) {
+          const pct = Math.max(5, Math.min(100, Math.round((1 - ms / 3000) * 100)));
+          fill.style.width = pct + '%';
+          fill.style.background = ms < 300 ? 'var(--green)' : ms < 800 ? 'var(--yellow)' : 'var(--red)';
+          msEl.textContent = ms + ' ms';
+          msEl.style.color = ms < 300 ? 'var(--green)' : ms < 800 ? 'var(--yellow)' : 'var(--red)';
+        } else {
+          fill.style.width = '3%'; fill.style.background = 'var(--red)';
+          msEl.textContent = 'Timeout'; msEl.style.color = 'var(--red)';
+        }
       }
-    });
-    resultsEl.insertAdjacentHTML('beforeend',
-      `<div style="margin-top:16px;padding:14px;background:rgba(74,222,128,0.06);border:1.5px solid rgba(74,222,128,0.25);border-radius:10px;font-size:0.85rem">
+
+      // Mark best
+      results.sort((a, b) => a.ms - b.ms);
+      const best = results[0];
+      if (best && best.ms < 9000) {
+        const rows = resultsEl.querySelectorAll('.scan-row');
+        rows.forEach(row => {
+          if (row.querySelector('.scan-name').textContent.includes(best.name)) {
+            row.classList.add('best');
+            row.querySelector('.scan-ms').insertAdjacentHTML('afterend',
+              `<span class="best-tag">🏆 سریع‌ترین</span>`);
+          }
+        });
+        resultsEl.insertAdjacentHTML('beforeend',
+          `<div style="margin-top:16px;padding:14px;background:rgba(74,222,128,0.06);border:1.5px solid rgba(74,222,128,0.25);border-radius:10px;font-size:0.85rem">
         <strong style="color:var(--green)">✅ پیشنهاد:</strong>
         برای تنظیم سریع‌ترین میرور در ترمینال اجرا کنید:<br>
         <code style="font-family:var(--mono);color:var(--accent);font-size:0.8rem;display:inline-block;margin-top:6px">
           mirrorman set ${langId} ${best.id}
         </code>
       </div>`);
-  }
+      }
 
-  btnText.textContent = '🚀 شروع اسکن';
-}
+      btnText.textContent = '🚀 شروع اسکن';
+    }
 
-async function measureLatency(url) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 5000);
-  const start = performance.now();
-  try {
-    await fetch(url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal });
-    clearTimeout(timeout);
-    return Math.round(performance.now() - start);
-  } catch {
-    clearTimeout(timeout);
-    return 9999;
-  }
-}
+    async function measureLatency(url) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      const start = performance.now();
+      try {
+        await fetch(url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal });
+        clearTimeout(timeout);
+        return Math.round(performance.now() - start);
+      } catch {
+        clearTimeout(timeout);
+        return 9999;
+      }
+    }
 
-// ── DNS ───────────────────────────────────────────────────────────────────────
-function renderDNS() {
-  const grid = document.getElementById('dns-grid');
-  grid.innerHTML = MIRRORS_DATA.dns_servers.map((dns, i) => `
+    // ── DNS ───────────────────────────────────────────────────────────────────────
+    function renderDNS() {
+      const grid = document.getElementById('dns-grid');
+      grid.innerHTML = MIRRORS_DATA.dns_servers.map((dns, i) => `
     <div class="dns-card" id="dns-${i}">
       <div class="dns-ip">${dns.ip}</div>
       <div class="dns-details">
@@ -1957,50 +2753,51 @@ function renderDNS() {
     </div>
   `).join('');
 
-  grid.querySelectorAll('.dns-card').forEach((card, i) => {
-    card.addEventListener('click', () => {
-      const ip = MIRRORS_DATA.dns_servers[i].ip;
-      navigator.clipboard.writeText(ip);
-      showToast('IP کپی شد: ' + ip);
-    });
-    card.style.cursor = 'pointer';
-  });
-}
+      grid.querySelectorAll('.dns-card').forEach((card, i) => {
+        card.addEventListener('click', () => {
+          const ip = MIRRORS_DATA.dns_servers[i].ip;
+          navigator.clipboard.writeText(ip);
+          showToast('IP کپی شد: ' + ip);
+        });
+        card.style.cursor = 'pointer';
+      });
+    }
 
-async function testDNS() {
-  MIRRORS_DATA.dns_servers.forEach((_, i) => {
-    const el = document.getElementById('dns-status-' + i);
-    if (el) el.className = 'dns-status testing';
-  });
+    async function testDNS() {
+      MIRRORS_DATA.dns_servers.forEach((_, i) => {
+        const el = document.getElementById('dns-status-' + i);
+        if (el) el.className = 'dns-status testing';
+      });
 
-  for (let i = 0; i < MIRRORS_DATA.dns_servers.length; i++) {
-    const dns = MIRRORS_DATA.dns_servers[i];
-    const el = document.getElementById('dns-status-' + i);
-    // We can't actually DNS-test from browser, simulate with a fetch
-    const ms = await measureLatency('https://' + dns.ip);
-    if (el) el.className = 'dns-status ' + (ms < 500 ? 'ok' : ms < 2000 ? 'slow' : 'fail');
-    if (el) el.title = ms < 9000 ? ms + ' ms' : 'Unreachable';
-  }
-}
+      for (let i = 0; i < MIRRORS_DATA.dns_servers.length; i++) {
+        const dns = MIRRORS_DATA.dns_servers[i];
+        const el = document.getElementById('dns-status-' + i);
+        // We can't actually DNS-test from browser, simulate with a fetch
+        const ms = await measureLatency('https://' + dns.ip);
+        if (el) el.className = 'dns-status ' + (ms < 500 ? 'ok' : ms < 2000 ? 'slow' : 'fail');
+        if (el) el.title = ms < 9000 ? ms + ' ms' : 'Unreachable';
+      }
+    }
 
-// ── Guide ─────────────────────────────────────────────────────────────────────
-function showGuide(section, btn) {
-  document.querySelectorAll('.guide-content').forEach(c => c.classList.remove('active'));
-  document.querySelectorAll('.guide-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('guide-' + section).classList.add('active');
-  btn.classList.add('active');
-}
+    // ── Guide ─────────────────────────────────────────────────────────────────────
+    function showGuide(section, btn) {
+      document.querySelectorAll('.guide-content').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.guide-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('guide-' + section).classList.add('active');
+      btn.classList.add('active');
+    }
 
-// ── Donate copy ───────────────────────────────────────────────────────────────
-function copyAddr(el, addr) {
-  navigator.clipboard.writeText(addr).then(() => {
-    const hint = el.querySelector('.copy-hint');
-    const orig = hint ? hint.textContent : '';
-    if (hint) hint.textContent = '✅ کپی شد!';
-    showToast('آدرس کپی شد!');
-    setTimeout(() => { if (hint) hint.textContent = orig; }, 2000);
-  }).catch(() => showToast('لطفاً آدرس را دستی کپی کنید'));
-}
-</script>
+    // ── Donate copy ───────────────────────────────────────────────────────────────
+    function copyAddr(el, addr) {
+      navigator.clipboard.writeText(addr).then(() => {
+        const hint = el.querySelector('.copy-hint');
+        const orig = hint ? hint.textContent : '';
+        if (hint) hint.textContent = '✅ کپی شد!';
+        showToast('آدرس کپی شد!');
+        setTimeout(() => { if (hint) hint.textContent = orig; }, 2000);
+      }).catch(() => showToast('لطفاً آدرس را دستی کپی کنید'));
+    }
+  </script>
 </body>
+
 </html>
