@@ -4,7 +4,7 @@
 #  Version: 1.0.0
 #  Author: MirrorMan Project
 #  License: MIT
-#  Repository: https://github.com/mirrorman/mirrorman
+#  Repository: https://github.com/solamente0/mirrorman
 # =============================================================================
 #
 #  Works on: Linux, macOS, Git Bash / WSL on Windows

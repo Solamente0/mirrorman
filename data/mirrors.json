@@ -1,9 +1,9 @@
 {
   "_meta": {
-    "version": "1.0.0",
-    "last_updated": "2025-01-01",
+    "version": "2.0.0",
+    "last_updated": "2025-04-01",
     "maintainer": "MirrorMan Project",
-    "description": "Curated list of programming language mirrors for users in restricted regions"
+    "description": "Curated list of programming language mirrors for users in restricted regions — including Iran, China, and global CDNs"
   },
   "languages": {
     "python": {
@@ -17,7 +17,7 @@
       "mirrors": [
         {
           "id": "tsinghua",
-          "name": "Tsinghua University (China)",
+          "name": "Tsinghua University",
           "url": "https://pypi.tuna.tsinghua.edu.cn/simple/",
           "country": "CN",
           "flag": "🇨🇳",
@@ -37,7 +37,7 @@
         },
         {
           "id": "ustc",
-          "name": "USTC (University of Science and Technology of China)",
+          "name": "USTC",
           "url": "https://mirrors.ustc.edu.cn/pypi/web/simple/",
           "country": "CN",
           "flag": "🇨🇳",
@@ -54,6 +54,66 @@
           "speed": "medium",
           "last_updated": "2024-06-01",
           "notes": "May be slower"
+        },
+        {
+          "id": "ito_pip",
+          "name": "ITO (Iran)",
+          "url": "https://repo.ito.gov.ir/pypi/simple/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Iran Information Technology Organization"
+        },
+        {
+          "id": "liara_pip",
+          "name": "Liara (Iran)",
+          "url": "https://mirror.liara.ir/pypi/simple/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Hosted by Liara in Iran"
+        },
+        {
+          "id": "runflare_pip",
+          "name": "Runflare (Iran)",
+          "url": "https://mirror.runflare.com/pypi/simple/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Daily auto-updated"
+        },
+        {
+          "id": "pardisco_pip",
+          "name": "Pardisco (Iran)",
+          "url": "https://mirrors.pardisco.co/pypi/simple/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "jamko_pip",
+          "name": "Jamko (Iran)",
+          "url": "https://mirror.jamko.ir/pypi/simple/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Docs and config examples available"
+        },
+        {
+          "id": "chabokan_pip",
+          "name": "Chabokan (Iran)",
+          "url": "https://mirror.chabokan.net/pypi/simple/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
         }
       ],
       "usage": {
@@ -97,6 +157,76 @@
           "url": "https://mirrors.huaweicloud.com/repository/npm/",
           "country": "CN",
           "flag": "🇨🇳",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "ito_npm",
+          "name": "ITO (Iran)",
+          "url": "https://repo.ito.gov.ir/npm/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Iran Information Technology Organization"
+        },
+        {
+          "id": "liara_npm",
+          "name": "Liara (Iran)",
+          "url": "https://mirror.liara.ir/npm/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "runflare_npm",
+          "name": "Runflare (Iran)",
+          "url": "https://mirror.runflare.com/npm/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Daily auto-updated"
+        },
+        {
+          "id": "pardisco_npm",
+          "name": "Pardisco (Iran)",
+          "url": "https://mirrors.pardisco.co/npm/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "atlantis_npm",
+          "name": "AtlantisCloud (Iran)",
+          "url": "https://mirror.atlantiscloud.ir/npm/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "chabokan_npm",
+          "name": "Chabokan (Iran)",
+          "url": "https://mirror.chabokan.net/npm/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "jamko_npm",
+          "name": "Jamko (Iran)",
+          "url": "https://mirror.jamko.ir/npm/",
+          "country": "IR",
+          "flag": "🇮🇷",
           "speed": "medium",
           "last_updated": "2025-01-01",
           "notes": ""
@@ -156,6 +286,86 @@
           "speed": "medium",
           "last_updated": "2025-01-01",
           "notes": "Global proxy service"
+        },
+        {
+          "id": "hamdocker",
+          "name": "HamDocker (Iran)",
+          "url": "https://hub.hamdocker.ir",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Docker registry without sanctions"
+        },
+        {
+          "id": "mobinhost_docker",
+          "name": "MobinHost (Iran)",
+          "url": "https://docker.mobinhost.com",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "arvancloud_docker",
+          "name": "ArvanCloud (Iran)",
+          "url": "https://docker.arvancloud.ir",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "ArvanCloud Iranian CDN"
+        },
+        {
+          "id": "focker",
+          "name": "Focker (Iran)",
+          "url": "https://focker.ir",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "liara_docker",
+          "name": "Liara (Iran)",
+          "url": "https://mirror.liara.ir",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "atlantis_docker",
+          "name": "AtlantisCloud (Iran)",
+          "url": "https://mirror.atlantiscloud.ir/docker/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "chabokan_docker",
+          "name": "Chabokan (Iran)",
+          "url": "https://mirror.chabokan.net/docker/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "pardisco_docker",
+          "name": "Pardisco (Iran)",
+          "url": "https://mirrors.pardisco.co/docker/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": ""
         }
       ],
       "usage": {
@@ -202,6 +412,26 @@
           "speed": "fast",
           "last_updated": "2025-01-01",
           "notes": ""
+        },
+        {
+          "id": "liara_go",
+          "name": "Liara (Iran)",
+          "url": "https://mirror.liara.ir/go/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "pardisco_go",
+          "name": "Pardisco (Iran)",
+          "url": "https://mirrors.pardisco.co/go/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": ""
         }
       ],
       "usage": {
@@ -221,7 +451,7 @@
       "mirrors": [
         {
           "id": "tuna_rust",
-          "name": "Tsinghua University (Rust)",
+          "name": "Tsinghua University",
           "url": "https://mirrors.tuna.tsinghua.edu.cn/crates.io-index",
           "country": "CN",
           "flag": "🇨🇳",
@@ -257,7 +487,7 @@
       }
     },
     "java": {
-      "name": "Java (Maven)",
+      "name": "Java (Maven / Gradle)",
       "icon": "☕",
       "category": "jvm",
       "env_var": "",
@@ -284,6 +514,46 @@
           "speed": "fast",
           "last_updated": "2025-01-01",
           "notes": ""
+        },
+        {
+          "id": "myket_maven",
+          "name": "Myket Maven (Iran)",
+          "url": "https://maven.myket.ir",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Android-focused; Maven Central + Google Maven + JitPack"
+        },
+        {
+          "id": "jamko_maven",
+          "name": "Jamko (Iran)",
+          "url": "https://mirror.jamko.ir/maven/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Maven + Gradle + Android SDK"
+        },
+        {
+          "id": "en_mirror",
+          "name": "EN Mirror (Iran)",
+          "url": "https://en-mirror.ir",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Google Maven + Maven Central + JitPack"
+        },
+        {
+          "id": "liara_nuget",
+          "name": "Liara NuGet (Iran)",
+          "url": "https://mirror.liara.ir/nuget/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Also covers NuGet"
         }
       ],
       "usage": {
@@ -303,7 +573,7 @@
       "mirrors": [
         {
           "id": "tuna_ruby",
-          "name": "Tsinghua University (Ruby)",
+          "name": "Tsinghua University",
           "url": "https://mirrors.tuna.tsinghua.edu.cn/rubygems/",
           "country": "CN",
           "flag": "🇨🇳",
@@ -328,6 +598,220 @@
         "permanent_win": "gem sources --add {mirror_url} --remove https://rubygems.org"
       }
     },
+    "php": {
+      "name": "PHP (Composer / Packagist)",
+      "icon": "🐘",
+      "category": "scripting",
+      "env_var": "",
+      "config_file": "~/.composer/config.json",
+      "config_file_win": "%APPDATA%\\Composer\\config.json",
+      "default_registry": "https://packagist.org",
+      "mirrors": [
+        {
+          "id": "aliyun_composer",
+          "name": "Aliyun Composer",
+          "url": "https://mirrors.aliyun.com/composer/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "tencent_composer",
+          "name": "Tencent Cloud Composer",
+          "url": "https://mirrors.cloud.tencent.com/composer/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "runflare_composer",
+          "name": "Runflare (Iran)",
+          "url": "https://mirror.runflare.com/composer/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Daily auto-updated"
+        },
+        {
+          "id": "jamko_composer",
+          "name": "Jamko (Iran)",
+          "url": "https://mirror.jamko.ir/composer/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "liara_composer",
+          "name": "Liara (Iran)",
+          "url": "https://mirror.liara.ir/composer/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "chabokan_php",
+          "name": "Chabokan (Iran)",
+          "url": "https://mirror.chabokan.net/php/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        }
+      ],
+      "usage": {
+        "temp": "composer config -g repos.packagist composer {mirror_url}",
+        "permanent_linux": "composer config -g repos.packagist composer {mirror_url}",
+        "permanent_win": "composer config -g repos.packagist composer {mirror_url}"
+      }
+    },
+    "dotnet": {
+      "name": ".NET (NuGet)",
+      "icon": "🔷",
+      "category": "general",
+      "env_var": "",
+      "config_file": "~/.nuget/NuGet/NuGet.Config",
+      "config_file_win": "%APPDATA%\\NuGet\\NuGet.Config",
+      "default_registry": "https://api.nuget.org/v3/index.json",
+      "mirrors": [
+        {
+          "id": "liara_nuget",
+          "name": "Liara (Iran)",
+          "url": "https://mirror.liara.ir/nuget/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "jamko_nuget",
+          "name": "Jamko (Iran)",
+          "url": "https://mirror.jamko.ir/nuget/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "pardisco_nuget",
+          "name": "Pardisco (Iran)",
+          "url": "https://mirrors.pardisco.co/nuget/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "chabokan_nuget",
+          "name": "Chabokan (Iran)",
+          "url": "https://mirror.chabokan.net/nuget/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "huawei_nuget",
+          "name": "Huawei Cloud NuGet",
+          "url": "https://mirrors.huaweicloud.com/repository/nuget/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        }
+      ],
+      "usage": {
+        "temp": "dotnet nuget add source {mirror_url}",
+        "permanent_linux": "Add <packageSources> entry to NuGet.Config",
+        "permanent_win": "Add <packageSources> entry to NuGet.Config"
+      }
+    },
+    "terraform": {
+      "name": "Terraform (Registry)",
+      "icon": "🏗",
+      "category": "devops",
+      "env_var": "TF_CLI_CONFIG_FILE",
+      "config_file": "~/.terraformrc",
+      "config_file_win": "%APPDATA%\\terraform.rc",
+      "default_registry": "https://registry.terraform.io",
+      "mirrors": [
+        {
+          "id": "peaker_tf",
+          "name": "Peaker (Iran)",
+          "url": "https://terraform.peaker.info",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Official Terraform proxy for Iran"
+        }
+      ],
+      "usage": {
+        "temp": "Set provider_installation block in ~/.terraformrc",
+        "permanent_linux": "Add network_mirror block in ~/.terraformrc pointing to {mirror_url}",
+        "permanent_win": "Add network_mirror block in %APPDATA%\\terraform.rc"
+      }
+    },
+    "r": {
+      "name": "R (CRAN)",
+      "icon": "📊",
+      "category": "data",
+      "env_var": "",
+      "config_file": "~/.Rprofile",
+      "config_file_win": "%USERPROFILE%\\.Rprofile",
+      "default_registry": "https://cran.r-project.org",
+      "mirrors": [
+        {
+          "id": "tuna_r",
+          "name": "Tsinghua University",
+          "url": "https://mirrors.tuna.tsinghua.edu.cn/CRAN/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "ustc_r",
+          "name": "USTC",
+          "url": "https://mirrors.ustc.edu.cn/CRAN/",
+          "country": "CN",
+          "flag": "🇨🇳",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": ""
+        },
+        {
+          "id": "um_cran",
+          "name": "University of Mashhad (Iran)",
+          "url": "https://cran.um.ac.ir",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Official CRAN mirror at University of Mashhad"
+        }
+      ],
+      "usage": {
+        "temp": "install.packages('{package}', repos='{mirror_url}')",
+        "permanent_linux": "Add options(repos = c(CRAN = '{mirror_url}')) to ~/.Rprofile",
+        "permanent_win": "Same; use %USERPROFILE%\\.Rprofile"
+      }
+    },
     "linux": {
       "name": "Linux Package Managers",
       "icon": "🐧",
@@ -339,7 +823,7 @@
       "mirrors": [
         {
           "id": "tuna_linux",
-          "name": "Tsinghua University (Linux)",
+          "name": "Tsinghua University",
           "url": "https://mirrors.tuna.tsinghua.edu.cn/",
           "country": "CN",
           "flag": "🇨🇳",
@@ -376,6 +860,246 @@
           "speed": "medium",
           "last_updated": "2024-10-01",
           "notes": ""
+        },
+        {
+          "id": "shatel",
+          "name": "Shatel (Iran)",
+          "url": "https://mirror.shatel.ir",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Official Iranian mirror by Shatel ISP — Ubuntu, Debian, Kali"
+        },
+        {
+          "id": "kubarcloud",
+          "name": "KubarCloud (Iran)",
+          "url": "https://mirrors.kubarcloud.com",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Debian, Ubuntu, Alpine, Arch, Linux kernel sources"
+        },
+        {
+          "id": "iut",
+          "name": "IUT (Isfahan University of Technology)",
+          "url": "https://repo.iut.ac.ir",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Debian, Ubuntu, Mint, Arch, Manjaro, Alpine, Rocky, Fedora, OpenSUSE, OpenBSD, CTAN"
+        },
+        {
+          "id": "arvancloud_linux",
+          "name": "ArvanCloud (Iran)",
+          "url": "https://mirror.arvancloud.ir",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Debian, Ubuntu, CentOS, Alpine, Arch, OpenSUSE, Manjaro"
+        },
+        {
+          "id": "iranserver",
+          "name": "IranServer",
+          "url": "https://mirror.iranserver.com",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Debian, Ubuntu, CentOS"
+        },
+        {
+          "id": "liara_linux",
+          "name": "Liara (Iran)",
+          "url": "https://mirror.liara.ir",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Debian, Ubuntu, CentOS, Fedora, Rocky, Alpine, OpenSUSE, Arch, Manjaro"
+        },
+        {
+          "id": "mobinhost_full",
+          "name": "MobinHost (Iran)",
+          "url": "https://mirror.mobinhost.com",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "FreeBSD, AlmaLinux, Alpine, Arch, Debian, EPEL, Manjaro, MariaDB, MongoDB, Ubuntu, Zabbix"
+        },
+        {
+          "id": "01cloud",
+          "name": "0-1 Cloud (Iran)",
+          "url": "https://mirror.0-1.cloud",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "AlmaLinux, Alpine, Arch, Debian, Fedora, FreeBSD, Ubuntu"
+        },
+        {
+          "id": "afranet",
+          "name": "Afranet (Iran)",
+          "url": "http://mirror.afranet.com",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Debian, Ubuntu, CentOS"
+        },
+        {
+          "id": "pishgaman",
+          "name": "Pishgaman Ubuntu (Iran)",
+          "url": "https://ubuntu.pishgaman.net",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Ubuntu only"
+        },
+        {
+          "id": "pardisco_linux",
+          "name": "Pardisco (Iran)",
+          "url": "https://mirrors.pardisco.co",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Ubuntu, Debian, Alpine"
+        },
+        {
+          "id": "ubuntu_official_ir",
+          "name": "Ubuntu Official Iran",
+          "url": "https://ir.archive.ubuntu.com/ubuntu",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Official Ubuntu archive mirror in Iran"
+        },
+        {
+          "id": "manageit",
+          "name": "ManageIT (Iran)",
+          "url": "http://mirror.manageit.ir/ubuntu",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Ubuntu only"
+        },
+        {
+          "id": "aminidc",
+          "name": "Aminidc (Iran)",
+          "url": "http://mirror.aminidc.com",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Debian, RHEL, Rocky, Ubuntu"
+        },
+        {
+          "id": "kimiahost",
+          "name": "KimiaHost Ubuntu (Iran)",
+          "url": "https://ubuntu-mirror.kimiahost.com",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Ubuntu only"
+        },
+        {
+          "id": "digitalvps",
+          "name": "DigitalVPS (Iran)",
+          "url": "https://mirror.digitalvps.ir/ubuntu",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Ubuntu only"
+        },
+        {
+          "id": "sindad_ubuntu",
+          "name": "Sindad Ubuntu (Iran)",
+          "url": "https://ir.ubuntu.sindad.cloud",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Ubuntu only"
+        },
+        {
+          "id": "sindad_centos",
+          "name": "Sindad CentOS (Iran)",
+          "url": "https://ir.centos.sindad.cloud",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "CentOS only"
+        },
+        {
+          "id": "sindad_epel",
+          "name": "Sindad EPEL (Iran)",
+          "url": "https://ir.epel.sindad.cloud",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "EPEL only"
+        },
+        {
+          "id": "faraso",
+          "name": "Faraso (Iran)",
+          "url": "http://mirror.faraso.org",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "CentOS, EPEL, Java Runtime, Java Dev"
+        },
+        {
+          "id": "abrha",
+          "name": "Abrha (Iran)",
+          "url": "https://repo.abrha.net",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Ubuntu, AlmaLinux, Debian, EPEL, Proxmox"
+        },
+        {
+          "id": "parsdev",
+          "name": "ParsDev (Iran)",
+          "url": "https://mirror.parsdev.com",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Ubuntu, AlmaLinux, Debian"
+        },
+        {
+          "id": "linuxmirrors_ir",
+          "name": "LinuxMirrors.ir (Iran)",
+          "url": "https://linuxmirrors.ir",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "Debian, Ubuntu, Fedora, Rocky, Oracle Linux"
+        },
+        {
+          "id": "ito_linux",
+          "name": "ITO (Iran)",
+          "url": "https://repo.ito.gov.ir",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "fast",
+          "last_updated": "2025-01-01",
+          "notes": "YUM/DNF (CentOS, Fedora, Rocky)"
         }
       ],
       "usage": {
@@ -386,13 +1110,13 @@
     }
   },
   "dns_servers": [
-    { "name": "Google DNS", "ip": "8.8.8.8", "country": "US" },
-    { "name": "Cloudflare DNS", "ip": "1.1.1.1", "country": "US" },
-    { "name": "OpenDNS", "ip": "208.67.222.222", "country": "US" },
-    { "name": "Quad9", "ip": "9.9.9.9", "country": "US" },
-    { "name": "Shecan (Iran)", "ip": "178.22.122.100", "country": "IR" },
-    { "name": "403.online (Iran)", "ip": "10.202.10.202", "country": "IR" },
-    { "name": "Electrotm (Iran)", "ip": "78.157.42.100", "country": "IR" },
-    { "name": "Begzar (Iran)", "ip": "185.55.226.26", "country": "IR" }
+    { "name": "Google DNS", "ip": "8.8.8.8", "country": "US", "flag": "🇺🇸" },
+    { "name": "Cloudflare DNS", "ip": "1.1.1.1", "country": "US", "flag": "🇺🇸" },
+    { "name": "OpenDNS", "ip": "208.67.222.222", "country": "US", "flag": "🇺🇸" },
+    { "name": "Quad9", "ip": "9.9.9.9", "country": "US", "flag": "🇺🇸" },
+    { "name": "Shecan (Iran)", "ip": "178.22.122.100", "country": "IR", "flag": "🇮🇷" },
+    { "name": "403.online (Iran)", "ip": "10.202.10.202", "country": "IR", "flag": "🇮🇷" },
+    { "name": "Electrotm (Iran)", "ip": "78.157.42.100", "country": "IR", "flag": "🇮🇷" },
+    { "name": "Begzar (Iran)", "ip": "185.55.226.26", "country": "IR", "flag": "🇮🇷" }
   ]
 }

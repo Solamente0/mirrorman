@@ -2,7 +2,7 @@
 
 > آینه‌یاب و میرور منیجر حرفه‌ای برای توسعه‌دهندگان در شبکه‌های محدود
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue?style=flat-square)](https://github.com/mirrorman/mirrorman)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue?style=flat-square)](https://github.com/solamente0/mirrorman)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 [![Shell](https://img.shields.io/badge/shell-bash%20%7C%20zsh%20%7C%20sh-orange?style=flat-square)]()
 [![PowerShell](https://img.shields.io/badge/powershell-5.1%2B-blue?style=flat-square)]()
@@ -49,7 +49,7 @@ mirrorman/
 
 ```bash
 # کلون پروژه
-git clone https://github.com/mirrorman/mirrorman.git
+git clone https://github.com/solamente0/mirrorman.git
 cd mirrorman
 
 # اجراپذیر کردن
@@ -67,7 +67,7 @@ source ~/.bashrc  # یا ~/.zshrc
 
 ```powershell
 # کلون پروژه
-git clone https://github.com/mirrorman/mirrorman.git
+git clone https://github.com/solamente0/mirrorman.git
 cd mirrorman
 
 # اجرا مستقیم
