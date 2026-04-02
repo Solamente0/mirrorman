@@ -78,7 +78,7 @@
         {
           "id": "runflare_pip",
           "name": "Runflare (Iran)",
-          "url": "https://mirror.runflare.com/pypi/simple/",
+          "url": "https://mirror-pypi.runflare.com/simple/",
           "country": "IR",
           "flag": "🇮🇷",
           "speed": "medium",
@@ -184,7 +184,7 @@
         {
           "id": "runflare_npm",
           "name": "Runflare (Iran)",
-          "url": "https://mirror.runflare.com/npm/",
+          "url": "https://mirror-npm.runflare.com/",
           "country": "IR",
           "flag": "🇮🇷",
           "speed": "medium",
@@ -318,6 +318,16 @@
           "notes": "ArvanCloud Iranian CDN"
         },
         {
+          "id": "runflare_docker",
+          "name": "Runflare (Iran)",
+          "url": "https://mirror-docker.runflare.com/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Daily auto-updated"
+        },
+        {
           "id": "focker",
           "name": "Focker (Iran)",
           "url": "https://focker.ir",
@@ -412,6 +422,16 @@
           "speed": "fast",
           "last_updated": "2025-01-01",
           "notes": ""
+        },
+        {
+          "id": "runflare_go",
+          "name": "Runflare (Iran)",
+          "url": "https://mirror-go.runflare.com/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Daily auto-updated"
         },
         {
           "id": "liara_go",
@@ -528,7 +548,7 @@
         {
           "id": "jamko_maven",
           "name": "Jamko (Iran)",
-          "url": "https://mirror.jamko.ir/maven/",
+          "url": "https://maven.jamko.ir",
           "country": "IR",
           "flag": "🇮🇷",
           "speed": "medium",
@@ -630,7 +650,7 @@
         {
           "id": "runflare_composer",
           "name": "Runflare (Iran)",
-          "url": "https://mirror.runflare.com/composer/",
+          "url": "https://mirror-composer.runflare.com/",
           "country": "IR",
           "flag": "🇮🇷",
           "speed": "medium",
@@ -692,6 +712,16 @@
           "speed": "fast",
           "last_updated": "2025-01-01",
           "notes": ""
+        },
+        {
+          "id": "runflare_nuget",
+          "name": "Runflare (Iran)",
+          "url": "https://mirror-nuget.runflare.com/",
+          "country": "IR",
+          "flag": "🇮🇷",
+          "speed": "medium",
+          "last_updated": "2025-01-01",
+          "notes": "Daily auto-updated"
         },
         {
           "id": "jamko_nuget",
