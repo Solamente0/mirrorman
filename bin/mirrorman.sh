@@ -366,14 +366,18 @@ _apply_mirror() {
   local lang="$1" mirror_id="$2" mirror_url="$3" os="$4" is_temp="$5"
 
   case "$lang" in
-    python)  _apply_python "$mirror_url" "$os" "$is_temp" ;;
-    npm)     _apply_npm "$mirror_url" "$os" "$is_temp" ;;
-    golang)  _apply_golang "$mirror_url" "$os" "$is_temp" ;;
-    rust)    _apply_rust "$mirror_url" "$os" "$is_temp" ;;
-    ruby)    _apply_ruby "$mirror_url" "$os" "$is_temp" ;;
-    docker)  _apply_docker "$mirror_url" "$os" "$is_temp" ;;
-    java)    _apply_java "$mirror_url" "$os" "$is_temp" ;;
-    linux)   _apply_linux "$mirror_url" "$os" "$is_temp" ;;
+    python)     _apply_python    "$mirror_url" "$os" "$is_temp" ;;
+    npm)        _apply_npm       "$mirror_url" "$os" "$is_temp" ;;
+    golang)     _apply_golang    "$mirror_url" "$os" "$is_temp" ;;
+    rust)       _apply_rust      "$mirror_url" "$os" "$is_temp" ;;
+    ruby)       _apply_ruby      "$mirror_url" "$os" "$is_temp" ;;
+    docker)     _apply_docker    "$mirror_url" "$os" "$is_temp" ;;
+    java)       _apply_java      "$mirror_url" "$os" "$is_temp" ;;
+    linux)      _apply_linux     "$mirror_url" "$os" "$is_temp" ;;
+    php)        _apply_php       "$mirror_url" "$os" "$is_temp" ;;
+    dotnet)     _apply_dotnet    "$mirror_url" "$os" "$is_temp" ;;
+    terraform)  _apply_terraform "$mirror_url" "$os" "$is_temp" ;;
+    r)          _apply_r         "$mirror_url" "$os" "$is_temp" ;;
     *)
       local env_var
       env_var=$(get_language_field "$lang" "env_var")
@@ -529,6 +533,73 @@ _apply_linux() {
   fi
 }
 
+_apply_php() {
+  local url="$1" os="$2" temp="$3"
+  if $temp; then
+    warn "Composer does not support a temporary mirror via env var."
+    info "For a one-off install use: composer require {package} --repository='{\"type\":\"composer\",\"url\":\"${url}\"}'"
+  else
+    if has_cmd composer; then
+      composer config -g repos.packagist composer "$url" && \
+        success "Composer global mirror updated permanently" || \
+        warn "Failed. Try: composer config -g repos.packagist composer \"$url\""
+    else
+      warn "composer not found. Configure manually:"
+      info "composer config -g repos.packagist composer \"${url}\""
+    fi
+  fi
+}
+
+_apply_dotnet() {
+  local url="$1" os="$2" temp="$3"
+  if $temp; then
+    warn "NuGet does not support a temporary source via env var."
+    info "Add as a one-off source: dotnet nuget add source \"${url}\" --name mirrorman"
+  else
+    if has_cmd dotnet; then
+      dotnet nuget remove source mirrorman &>/dev/null || true
+      dotnet nuget add source "$url" --name mirrorman && \
+        success "NuGet source 'mirrorman' added permanently" || \
+        warn "Failed. Try: dotnet nuget add source \"$url\" --name mirrorman"
+    else
+      warn "dotnet not found. Add manually:"
+      info "dotnet nuget add source \"${url}\" --name mirrorman"
+    fi
+  fi
+}
+
+_apply_terraform() {
+  local url="$1" os="$2" temp="$3"
+  local tf_rc="$HOME/.terraformrc"
+  $temp && warn "Terraform mirror cannot be set temporarily; writing to ~/.terraformrc (permanent)."
+  [[ -f "$tf_rc" ]] && cp "$tf_rc" "${tf_rc}.mirrorman.bak"
+  cat > "$tf_rc" << EOF
+provider_installation {
+  network_mirror {
+    url = "$url"
+  }
+}
+EOF
+  success "Terraform ~/.terraformrc updated"
+  info "All provider downloads will route through: ${CYAN}${url}${RESET}"
+}
+
+_apply_r() {
+  local url="$1" os="$2" temp="$3"
+  if $temp; then
+    info "Run this inside R for a temporary CRAN mirror:"
+    echo -e "  ${DIM}options(repos = c(CRAN = \"${url}\"))${RESET}"
+  else
+    local rprofile="$HOME/.Rprofile"
+    if [[ -f "$rprofile" ]] && has_cmd sed; then
+      sed -i.bak '/options(repos.*# mirrorman/d' "$rprofile" 2>/dev/null || true
+    fi
+    echo "options(repos = c(CRAN = \"$url\")) # mirrorman" >> "$rprofile"
+    success "R CRAN mirror set in ~/.Rprofile"
+    info "Reload with: source(\"~/.Rprofile\") or restart R"
+  fi
+}
+
 _apply_env_var() {
   local var="$1" url="$2" temp="$3"
   if $temp; then
@@ -670,6 +741,43 @@ cmd_reset() {
         cp "${cargo_config}.mirrorman.bak" "$cargo_config" && \
         success "Cargo config restored from backup" || \
         { rm -f "$cargo_config" && success "Cargo config removed (uses default)"; }
+      ;;
+    php)
+      if has_cmd composer; then
+        composer config -g --unset repos.packagist && \
+          success "Composer mirror unset (uses default Packagist)" || \
+          warn "Failed. Try: composer config -g --unset repos.packagist"
+      else
+        info "Manual reset: composer config -g --unset repos.packagist"
+      fi
+      ;;
+    dotnet)
+      if has_cmd dotnet; then
+        dotnet nuget remove source mirrorman &>/dev/null && \
+          success "NuGet source 'mirrorman' removed" || \
+          info "Source 'mirrorman' was not set or already removed."
+      else
+        info "Manual reset: dotnet nuget remove source mirrorman"
+      fi
+      ;;
+    terraform)
+      local tf_rc="$HOME/.terraformrc"
+      if [[ -f "${tf_rc}.mirrorman.bak" ]]; then
+        cp "${tf_rc}.mirrorman.bak" "$tf_rc" && \
+          success "Terraform ~/.terraformrc restored from backup"
+      else
+        rm -f "$tf_rc" && success "Terraform ~/.terraformrc removed (uses Terraform Registry)"
+      fi
+      ;;
+    r)
+      local rprofile="$HOME/.Rprofile"
+      if [[ -f "$rprofile" ]] && has_cmd sed; then
+        sed -i.bak '/options(repos.*# mirrorman/d' "$rprofile" 2>/dev/null && \
+          success "R CRAN mirror line removed from ~/.Rprofile" || \
+          warn "Could not edit ~/.Rprofile automatically."
+      else
+        info "Manual reset: remove the options(repos...) # mirrorman line from ~/.Rprofile"
+      fi
       ;;
     *)
       info "Manual reset required. Default URL: ${CYAN}${default_url}${RESET}"

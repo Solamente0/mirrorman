@@ -184,9 +184,90 @@ function Invoke-Set {
     }
     "rust" {
       $cargoConfig = "$env:USERPROFILE\.cargo\config.toml"
-      $content = "[source.crates-io]`nreplace-with = `"mirror`"`n`n[source.mirror]`nregistry = `"$url`""
-      Set-Content $cargoConfig $content
+      if (Test-Path $cargoConfig) { Copy-Item $cargoConfig "$cargoConfig.mirrorman.bak" }
+      "[source.crates-io]`nreplace-with = `"mirror`"`n`n[source.mirror]`nregistry = `"$url`"" | Set-Content $cargoConfig
       Write-Success "Cargo config.toml updated: $cargoConfig"
+    }
+    "docker" {
+      if ($Temp) { Write-Warn "Docker mirrors cannot be set temporarily; configuring permanently." }
+      $djPath = "$env:USERPROFILE\.docker\daemon.json"
+      New-Item -ItemType Directory -Force -Path (Split-Path $djPath) | Out-Null
+      $d = if (Test-Path $djPath) { Get-Content $djPath -Raw | ConvertFrom-Json } else { [PSCustomObject]@{} }
+      if (-not ($d | Get-Member -Name 'registry-mirrors' -MemberType NoteProperty)) {
+        $d | Add-Member -NotePropertyName 'registry-mirrors' -NotePropertyValue @()
+      }
+      if ($url -notin $d.'registry-mirrors') {
+        $d.'registry-mirrors' = @($d.'registry-mirrors') + $url
+      }
+      $d | ConvertTo-Json -Depth 5 | Set-Content $djPath
+      Write-Success "Docker Desktop daemon.json updated: $djPath"
+      Write-Info "Restart Docker Desktop to apply changes."
+    }
+    "ruby" {
+      if (Get-Command gem -ErrorAction SilentlyContinue) {
+        & gem sources --add $url 2>&1 | Out-Null
+        & gem sources --remove "https://rubygems.org" 2>&1 | Out-Null
+        Write-Success "RubyGems source updated to $url"
+      } else {
+        Write-Warn "gem not found. Add to %USERPROFILE%\.gemrc manually."
+        Write-Info "gem sources --add `"$url`" --remove https://rubygems.org"
+      }
+    }
+    "java" {
+      Write-Info "Maven mirror URL: $url"
+      Write-Info "Add the following block to %USERPROFILE%\.m2\settings.xml inside <mirrors>:"
+      Write-Host "  <mirror>" -ForegroundColor DarkGray
+      Write-Host "    <id>mirrorman</id>" -ForegroundColor DarkGray
+      Write-Host "    <mirrorOf>central</mirrorOf>" -ForegroundColor DarkGray
+      Write-Host "    <url>$url</url>" -ForegroundColor DarkGray
+      Write-Host "  </mirror>" -ForegroundColor DarkGray
+    }
+    "linux" {
+      Write-Warn "Linux package manager mirrors cannot be configured from Windows."
+      Write-Info "Mirror URL: $url"
+      Write-Info "Use this URL when configuring mirrors inside WSL or a Linux VM."
+    }
+    "php" {
+      if (Get-Command composer -ErrorAction SilentlyContinue) {
+        & composer config -g repos.packagist composer $url
+        Write-Success "Composer global mirror updated permanently"
+      } else {
+        Write-Warn "composer not found. Configure manually:"
+        Write-Info "composer config -g repos.packagist composer `"$url`""
+      }
+    }
+    "dotnet" {
+      if (Get-Command dotnet -ErrorAction SilentlyContinue) {
+        & dotnet nuget remove source mirrorman 2>&1 | Out-Null
+        & dotnet nuget add source $url --name mirrorman
+        Write-Success "NuGet source 'mirrorman' added permanently"
+      } else {
+        Write-Warn "dotnet not found. Add manually:"
+        Write-Info "dotnet nuget add source `"$url`" --name mirrorman"
+      }
+    }
+    "terraform" {
+      $tfrc = "$env:APPDATA\terraform.rc"
+      if (Test-Path $tfrc) { Copy-Item $tfrc "$tfrc.mirrorman.bak" }
+      @"
+provider_installation {
+  network_mirror {
+    url = "$url"
+  }
+}
+"@ | Set-Content $tfrc
+      Write-Success "Terraform terraform.rc updated: $tfrc"
+      Write-Info "All provider downloads will route through: $url"
+    }
+    "r" {
+      $rprofile = "$env:USERPROFILE\.Rprofile"
+      if (Test-Path $rprofile) {
+        $lines = Get-Content $rprofile | Where-Object { $_ -notmatch 'options\(repos.*# mirrorman' }
+        $lines | Set-Content $rprofile
+      }
+      "options(repos = c(CRAN = `"$url`")) # mirrorman" | Add-Content $rprofile
+      Write-Success "R CRAN mirror set in $rprofile"
+      Write-Info "Reload with: source(`"~/.Rprofile`") or restart R"
     }
     default {
       $ev = $info.env_var
@@ -239,10 +320,67 @@ function Invoke-Reset {
   Write-Header "Resetting $Lang to default"
   Write-Info "Default: $default"
   switch ($Lang) {
-    "python" { & pip config unset global.index-url 2>&1 | Out-Null; Write-Success "pip reset" }
-    "npm"    { & npm config set registry "https://registry.npmjs.org/"; Write-Success "npm reset" }
-    "golang" { & go env -w "GOPROXY=$default"; Write-Success "Go GOPROXY reset" }
-    default  { Write-Info "Manual reset. Default: $default" }
+    "python" { & pip config unset global.index-url 2>&1 | Out-Null; Write-Success "pip reset to default PyPI" }
+    "npm"    { & npm config set registry "https://registry.npmjs.org/"; Write-Success "npm reset to default registry" }
+    "golang" { & go env -w "GOPROXY=$default"; Write-Success "Go GOPROXY reset to default" }
+    "rust" {
+      $cargoConfig = "$env:USERPROFILE\.cargo\config.toml"
+      if (Test-Path "$cargoConfig.mirrorman.bak") {
+        Copy-Item "$cargoConfig.mirrorman.bak" $cargoConfig
+        Write-Success "Cargo config.toml restored from backup"
+      } else {
+        Remove-Item $cargoConfig -ErrorAction SilentlyContinue
+        Write-Success "Cargo config.toml removed (uses default crates.io)"
+      }
+    }
+    "docker" {
+      $djPath = "$env:USERPROFILE\.docker\daemon.json"
+      if (Test-Path $djPath) {
+        $d = Get-Content $djPath -Raw | ConvertFrom-Json
+        if ($d | Get-Member -Name 'registry-mirrors' -MemberType NoteProperty) {
+          $d.'registry-mirrors' = @($d.'registry-mirrors' | Where-Object { $_ -ne $default })
+          $d | ConvertTo-Json -Depth 5 | Set-Content $djPath
+        }
+      }
+      Write-Success "Docker daemon.json reset. Restart Docker Desktop to apply."
+    }
+    "ruby" {
+      if (Get-Command gem -ErrorAction SilentlyContinue) {
+        & gem sources --add "https://rubygems.org" 2>&1 | Out-Null
+        Write-Success "RubyGems reset to https://rubygems.org"
+      } else { Write-Info "Manual reset: gem sources --add https://rubygems.org" }
+    }
+    "php" {
+      if (Get-Command composer -ErrorAction SilentlyContinue) {
+        & composer config -g --unset repos.packagist 2>&1 | Out-Null
+        Write-Success "Composer mirror unset (uses default Packagist)"
+      } else { Write-Info "Manual reset: composer config -g --unset repos.packagist" }
+    }
+    "dotnet" {
+      if (Get-Command dotnet -ErrorAction SilentlyContinue) {
+        & dotnet nuget remove source mirrorman 2>&1 | Out-Null
+        Write-Success "NuGet source 'mirrorman' removed"
+      } else { Write-Info "Manual reset: dotnet nuget remove source mirrorman" }
+    }
+    "terraform" {
+      $tfrc = "$env:APPDATA\terraform.rc"
+      if (Test-Path "$tfrc.mirrorman.bak") {
+        Copy-Item "$tfrc.mirrorman.bak" $tfrc
+        Write-Success "Terraform terraform.rc restored from backup"
+      } else {
+        Remove-Item $tfrc -ErrorAction SilentlyContinue
+        Write-Success "Terraform terraform.rc removed (uses Terraform Registry)"
+      }
+    }
+    "r" {
+      $rprofile = "$env:USERPROFILE\.Rprofile"
+      if (Test-Path $rprofile) {
+        $lines = Get-Content $rprofile | Where-Object { $_ -notmatch 'options\(repos.*# mirrorman' }
+        $lines | Set-Content $rprofile
+        Write-Success "R CRAN mirror line removed from $rprofile"
+      } else { Write-Info "No .Rprofile found; nothing to reset." }
+    }
+    default  { Write-Info "Manual reset required. Default: $default" }
   }
 }
 
